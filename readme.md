@@ -21,6 +21,7 @@ export ANTHROPIC_API_KEY="blahblah..."
 ```
 
 2. Player selection
+
 Uncomment main.py and select player1 and player2.
 
 ```python
@@ -41,6 +42,7 @@ def main():
 ```
 
 3. Run
+
 ```python
 python main.py
 ```
