@@ -11,7 +11,7 @@ def to_string_board(board):
 # 보드 상태를 사람이 보기 좋게 변환 합니다.
 def print_board(board):
     for row in board:
-        print(" ".join('○' if x == 1 else '●' if x == 2 else '·' for x in row))
+        print(" ".join('●' if x == 1 else '○' if x == 2 else '·' for x in row))
 
 
 # 파일을 읽어옵니다.

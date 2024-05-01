@@ -7,14 +7,14 @@ from player.openai_three_dot_five_turbo_player import OpenAiGptThreeDotFiveTurbo
 
 def main():
     # player1 = ClaudeOpusPlayer(1)
-    player1 = GoogleGeminiProPlayer(1)
+    # player1 = GoogleGeminiProPlayer(1)
     # player1 = OpenAiGptFourTurboPlayer(1)
-    # player1 = OpenAiGptThreeDotFiveTurboPlayer(1)
+    player1 = OpenAiGptThreeDotFiveTurboPlayer(1)
 
     # player2 = ClaudeOpusPlayer(2)
     # player2 = GoogleGeminiProPlayer(2)
-    player2 = OpenAiGptFourTurboPlayer(2)
-    # player2 = OpenAiGptThreeDotFiveTurboPlayer(2)
+    # player2 = OpenAiGptFourTurboPlayer(2)
+    player2 = OpenAiGptThreeDotFiveTurboPlayer(2)
 
     winner = play_game(player1, player2)
     if winner:
