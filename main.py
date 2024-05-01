@@ -13,8 +13,8 @@ def main():
 
     # player2 = ClaudeOpusPlayer(2)
     # player2 = GoogleGeminiProPlayer(2)
-    # player2 = OpenAiGptFourTurboPlayer(2)
-    player2 = OpenAiGptThreeDotFiveTurboPlayer(2)
+    player2 = OpenAiGptFourTurboPlayer(2)
+    # player2 = OpenAiGptThreeDotFiveTurboPlayer(2)
 
     winner = play_game(player1, player2)
     if winner:
