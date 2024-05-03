@@ -1,5 +1,5 @@
 class LLMPlayer:
-    def __init__(self, player_number):
+    def __init__(self, player_number: int):
         self.player_number = player_number
         self.history = []
 
