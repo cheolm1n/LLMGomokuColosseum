@@ -1,5 +1,6 @@
 from time import time
 
+
 # 보드 상태를 문자열로 변환 합니다.
 def to_string_board(board):
     result = "```\n"
@@ -12,8 +13,11 @@ def to_string_board(board):
 
 # 보드 상태를 사람이 보기 좋게 변환 합니다.
 def print_board(board):
-    for row in board:
-        print(" ".join('●' if x == 1 else '○' if x == 2 else '·' for x in row))
+    # 맨 위에 열 번호 출력, 0부터 시작 (y)
+    print("  " + " ".join(str(i).rjust(2) for i in range(len(board[0]))))
+    # 각 행을 출력, 행 번호도 0부터 시작 (x)
+    for idx, row in enumerate(board):
+        print(str(idx).rjust(2) + " " + " ".join('●' if x == 1 else '○' if x == 2 else '·' for x in row))
 
 
 # 파일을 읽어옵니다.
