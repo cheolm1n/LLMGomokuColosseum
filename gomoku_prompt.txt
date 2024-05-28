@@ -31,7 +31,7 @@ here is example of board.
 Your objective is to place your stone in an empty position (0). Follow these steps for each move:
 1. Examine the board to find all empty positions.
 2. Select an empty position where placing a stone will aid your strategy to align five consecutive stones with my stone. Consider both horizontally, vertically, and diagonally.
-for example here board is player1 win.
+For example, if the board state is as follows, player 1 must move at x=11, y=10 to win.
 ```
 000000000000000
 000000000000000
@@ -44,16 +44,16 @@ for example here board is player1 win.
 000000010000000
 000000021200000
 000000002100000
-000000000010000
+000000000000000
 000000000000000
 000000000000000
 000000000000000
 ```
-3. Respond with your move in JSON format, like this: {"x": 7, "y": 7}, where x and y are coordinates of the position you choose to place your stone.
+3. Respond with your move in JSON format, like this: {"x": 11, "y": 10, "reason": "If you make a move here, five moves will lead to victory."}, where `x` and `y` are coordinates of the position you choose to place your stone and `reason` is the strategic reason why that move was made.
 4. To win, think about move in various directions, including horizontally, vertically, and diagonally.
 
 Your move should be strategic and comply with the game rules.
 You MUST answer only json format.
 You MUST move only position marked with zero (0). It would be a BIG MISTAKE to respond with coordinates marked with 1 or 2.
 Now, considering the current board state, make your next move as a professional player.
-
+The result must be in json format and have `x`, `y`, and `reason` as keys.

@@ -39,12 +39,12 @@ def play_game(player1: LLMPlayer, player2: LLMPlayer):
 
     while move_count < 15 * 15:
         move_before = get_now_unix_ms()
-        x, y = current_player.get_move(board)
+        x, y, reason = current_player.get_move(board)
         move_after = get_now_unix_ms()
         if board[x, y] == 0:
             board[x, y] = current_player.player_number
             move_count += 1
-            print(f"\nPlayer {current_player.player_number} move:")
+            print(f"\nPlayer {current_player.player_number} move : ({x}, {y}), reason : {reason}")
             print_board(board)
 
             MoveLogger.append_log(
@@ -52,12 +52,13 @@ def play_game(player1: LLMPlayer, player2: LLMPlayer):
                     match_id=match_id,
                     color="black" if current_player.player_number == 1 else "white",
                     order=move_count,
-                    x=x,
-                    y=y,
                     time_spent=move_after - move_before,
                     moved=move_after,
                     valid=1,
-                    retry_count=retry_count
+                    retry_count=retry_count,
+                    x=x,
+                    y=y,
+                    reason=reason
                 )
             )
             if check_winner(board, current_player.player_number):
@@ -73,12 +74,13 @@ def play_game(player1: LLMPlayer, player2: LLMPlayer):
                     match_id=match_id,
                     color="black" if current_player.player_number == 1 else "white",
                     order=move_count,
-                    x=x,
-                    y=y,
                     time_spent=move_after - move_before,
                     moved=move_after,
                     valid=0,
-                    retry_count=retry_count
+                    retry_count=retry_count,
+                    x=x,
+                    y=y,
+                    reason=reason
                 )
             )
             retry_count += 1
