@@ -7,7 +7,8 @@ from uuid import uuid4
 from log.match import MatchLogger, MatchLog
 from log.move import MoveLogger, MoveLog
 from player.llm_player import LLMPlayer
-from util import print_board, get_now_unix_ms
+from record import Record
+from util import print_board, get_now_unix_ms, get_color_from_player
 
 
 # 현재 보드 상태에서 승자를 판단합니다.
@@ -31,6 +32,8 @@ def play_game(player1: LLMPlayer, player2: LLMPlayer):
     move_count = 0
     retry_count = 0
 
+    game_record = Record()
+
     # match log
     match_id = str(uuid4())
     black = player1.__class__.__name__
@@ -50,7 +53,7 @@ def play_game(player1: LLMPlayer, player2: LLMPlayer):
             MoveLogger.append_log(
                 MoveLog(
                     match_id=match_id,
-                    color="black" if current_player.player_number == 1 else "white",
+                    color=get_color_from_player(current_player),
                     order=move_count,
                     x=x,
                     y=y,
@@ -60,6 +63,7 @@ def play_game(player1: LLMPlayer, player2: LLMPlayer):
                     retry_count=retry_count
                 )
             )
+            game_record.add(current_player, x, y)
             if check_winner(board, current_player.player_number):
                 print(f"Player {current_player.player_number} wins!")
                 break
@@ -71,7 +75,7 @@ def play_game(player1: LLMPlayer, player2: LLMPlayer):
             MoveLogger.append_log(
                 MoveLog(
                     match_id=match_id,
-                    color="black" if current_player.player_number == 1 else "white",
+                    color=get_color_from_player(current_player),
                     order=move_count,
                     x=x,
                     y=y,
@@ -81,6 +85,7 @@ def play_game(player1: LLMPlayer, player2: LLMPlayer):
                     retry_count=retry_count
                 )
             )
+            # 이상하게 뒀을때는 기록 해야하나????
             retry_count += 1
             print(f"Invalid move, {retry_count} try again.")
             if retry_count >= 3:

@@ -1,5 +1,8 @@
 from time import time
 
+from player.llm_player import LLMPlayer
+
+
 # 보드 상태를 문자열로 변환 합니다.
 def to_string_board(board):
     result = "```\n"
@@ -38,3 +41,7 @@ def convert_string_format(data_as_is):
 
 def get_now_unix_ms():
     return round(time() * 1000)
+
+
+def get_color_from_player(player: LLMPlayer) -> str:
+    return "black" if player.player_number == 1 else "white"
