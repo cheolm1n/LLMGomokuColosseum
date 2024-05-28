@@ -45,7 +45,7 @@ def play_game(player1: LLMPlayer, player2: LLMPlayer):
             board[x, y] = current_player.player_number
             move_count += 1
             print(f"\nPlayer {current_player.player_number} move : ({x}, {y}), reason : {reason}")
-            print_board(board)
+            print_board(board, (x, y), current_player.player_number)
 
             MoveLogger.append_log(
                 MoveLog(

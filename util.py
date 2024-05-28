@@ -12,12 +12,18 @@ def to_string_board(board):
 
 
 # 보드 상태를 사람이 보기 좋게 변환 합니다.
-def print_board(board):
-    # 맨 위에 열 번호 출력, 0부터 시작 (y)
-    print("  " + " ".join(str(i).rjust(2) for i in range(len(board[0]))))
-    # 각 행을 출력, 행 번호도 0부터 시작 (x)
-    for idx, row in enumerate(board):
-        print(str(idx).rjust(2) + " " + " ".join('●' if x == 1 else '○' if x == 2 else '·' for x in row))
+def print_board(board, current_move, player):
+    # 맨 위에 열 번호 출력, 0부터 시작
+    print("  " + " ".join(str(y).rjust(2) for y in range(len(board[0]))))
+    # 각 행을 출력, 행 번호도 0부터 시작
+    for x, row in enumerate(board):
+        formatted_row = ""
+        for y, cell in enumerate(row):
+            if (x, y) == current_move:
+                formatted_row += "★ " if player == 1 else "☆ "
+            else:
+                formatted_row += '● ' if cell == 1 else '○ ' if cell == 2 else '· '
+        print(str(x).rjust(2) + " " + formatted_row)
 
 
 # 파일을 읽어옵니다.
