@@ -1,8 +1,9 @@
 from game import play_game
 from player.claude_opus_player import ClaudeOpusPlayer
 from player.google_gemini_pro_player import GoogleGeminiProPlayer
+from player.openai_gpt_four_omni_player import OpenAiGptFourOmniPlayer
 from player.openai_gpt_four_turbo_player import OpenAiGptFourTurboPlayer
-from player.openai_three_dot_five_turbo_player import OpenAiGptThreeDotFiveTurboPlayer
+from player.openai_gpt_three_dot_five_turbo_player import OpenAiGptThreeDotFiveTurboPlayer
 
 
 def main():
@@ -13,7 +14,7 @@ def main():
 
     # player2 = ClaudeOpusPlayer(2)
     # player2 = GoogleGeminiProPlayer(2)
-    player2 = OpenAiGptFourTurboPlayer(2)
+    player2 = OpenAiGptFourOmniPlayer(2)
     # player2 = OpenAiGptThreeDotFiveTurboPlayer(2)
 
     winner = play_game(player1, player2)
