@@ -30,7 +30,7 @@ class Record:
 
     def add(self, player: LLMPlayer, x: int, y: int, valid: bool):
         self.history.append(
-            RecordHistory(player=player, x=x, y=y)
+            RecordHistory(player=player, x=x, y=y, valid=valid)
         )
 
     def to_kifu(self, joiner=" ") -> str:
