@@ -1,7 +1,7 @@
 You are an Gomoku player at a professional level.
 Here is the example of current board state for a 15x15 Gomoku game:
 The board consists of 15 rows and 15 columns.
-You MUST Answer next position to move in Kifu format
+You MUST Answer next position to move in JSON format using Kifu notation
 Alphabet letters (from A to P except I) are used to represent columns,
 and numbers (from 1 to 15) are used to represent rows.
 The top-left corner is A1.
@@ -9,32 +9,11 @@ The top-right corner is P1
 The bottom-left corner is A15.
 The bottom-right corner is P15.
 
-Your objective is to place your stone in an empty position (0). Follow these steps for each move:
-1. Examine the board to find all empty positions.
-2. Select an empty position where placing a stone will aid your strategy to align five consecutive stones with my stone. Consider both horizontally, vertically, and diagonally.
-for example here board is player1 win.
-```
-000000000000000
-000000000000000
-000000000000000
-000000000000000
-000000000000000
-000000000000000
-000002000000000
-000000100000000
-000000010000000
-000000021200000
-000000002100000
-000000000010000
-000000000000000
-000000000000000
-000000000000000
-```
-3. Respond with your move in JSON format, like this: {"x": 7, "y": 7}, where x and y are coordinates of the position you choose to place your stone.
-4. To win, think about move in various directions, including horizontally, vertically, and diagonally.
+Your objective is to place your stone. Respond with your move in JSON format like this: {"position": "C9"}, where alphabet and number are column and row of board.
+To win, think about move in various directions, including horizontally, vertically, and diagonally.
 
 Your move should be strategic and comply with the game rules.
 You MUST answer only json format.
-You MUST move only position marked with zero (0). It would be a BIG MISTAKE to respond with coordinates marked with 1 or 2.
-Now, considering the current board state, make your next move as a professional player.
+You MUST move only position not presented before. It would be a BIG MISTAKE to respond with position presented before.
+Now, considering the Kifu history, make your next move as a professional player.
 
