@@ -1,5 +1,3 @@
-import json
-
 import numpy as np
 
 from uuid import uuid4
@@ -8,7 +6,7 @@ from log.match import MatchLogger, MatchLog
 from log.move import MoveLogger, MoveLog
 from player.llm_player import LLMPlayer
 from record import Record
-from util import print_board, get_now_unix_ms, get_color_from_player
+from util import print_board, get_now_unix_ms, get_color_from_player, convert_coord_to_kifu
 
 
 # 현재 보드 상태에서 승자를 판단합니다.
@@ -66,7 +64,7 @@ class Game:
 
         while move_count < 15 * 15:
             move_before = get_now_unix_ms()
-            x, y = current_player.get_move(board)
+            x, y = current_player.get_move(game_record)
             move_after = get_now_unix_ms()
             if board[x, y] == 0:
                 board[x, y] = current_player.player_number
@@ -119,14 +117,13 @@ class Game:
                     retry_count = 0
                     current_player.history.clear()
                     game_record.add(player=current_player, x=-1, y=-1, valid=False)
-                invalid_move = json.dumps("{'x': " + f"{x}" + ", 'y': " + f"{y}" + "}")
-                current_player.add_history({"role": "assistant", "content": f"{invalid_move}"})
+                current_player.add_history({"role": "assistant", "content": f"{convert_coord_to_kifu(x=x, y=y)}"})
                 current_player.add_history({"role": "user",
                                             "content": "You just made a wrong move. Another stone has already been placed there. "
-                                                       "You can only place stones where marked 0. "
+                                                       "You can only place stones where not presented before. "
                                                        "Please move to another location. There is no need for apologies or excuses. "
-                                                       "Please respond only with coordinate values in json format."
-                                                       "x and y can only take values from 0 to 14."
+                                                       "Please respond only with Kifu notation in json format like {\"position\": \"F10\"}."
+                                                       "alphabet is in between A from P (Note that the I is not included). and number is in between 1 from 15"
                                                        "Please move to another location. "
                                             })
 

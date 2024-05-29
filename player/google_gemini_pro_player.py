@@ -4,17 +4,18 @@ import os
 import google.generativeai as genai
 
 from player.llm_player import LLMPlayer
-from util import convert_string_format, read_file, to_string_board
+from record import Record
+from util import convert_string_format, read_file, to_string_board, convert_kifu_to_coord
 
 GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
 
 
 class GoogleGeminiProPlayer(LLMPlayer):
-    def get_move(self, board):
+    def get_move(self, record: Record):
         genai.configure(api_key=GOOGLE_API_KEY)
         model = genai.GenerativeModel('gemini-pro')
         prompt = read_file("gomoku_prompt.txt")
-        content = f"{prompt}\nYou are playing with stone '{self.player_number}'.\nYour turn. Here is the current state of the board:\n{to_string_board(board)}"
+        content = f"{prompt}\nYou are playing with stone '{self.player_number}'.\nYour turn. Here is the history of the game:\n{record.to_kifu()}"
         messages = content + convert_string_format(self.history)
         # converted_history = convert_data_format(self.history)
         # messages = ([
@@ -34,4 +35,4 @@ class GoogleGeminiProPlayer(LLMPlayer):
                                               temperature=1.0)
                                           )
         json_response = json.loads(response.text)
-        return json_response['x'], json_response['y']
+        return convert_kifu_to_coord(json_response['position'])

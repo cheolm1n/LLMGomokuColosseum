@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 from player.llm_player import LLMPlayer
-from util import get_color_from_player
+from util import get_color_from_player, BOARD_COLUMNS, convert_coord_to_kifu
 
 
 @dataclass
@@ -15,10 +15,9 @@ class RecordHistory:
     def color(self):
         return get_color_from_player(self.player)
 
-    def get_kifu_position(self):
-        columns = list("ABCDEFGHJKLMNOP") # 15 * 15 board
+    def get_kifu_position(self): # 15 * 15 board
         if self.valid:
-            return f"{columns[self.y]}{self.x + 1}"
+            return convert_coord_to_kifu(x=self.x, y=self.y)
         else:
             # not standard notation
             return "INVALID"

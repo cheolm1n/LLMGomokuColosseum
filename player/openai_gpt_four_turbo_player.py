@@ -4,17 +4,18 @@ import os
 from openai import OpenAI
 
 from player.llm_player import LLMPlayer
-from util import read_file, to_string_board
+from record import Record
+from util import read_file, to_string_board, convert_kifu_to_coord
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 
 class OpenAiGptFourTurboPlayer(LLMPlayer):
-    def get_move(self, board):
+    def get_move(self, record: Record):
         prompt = read_file("gomoku_prompt.txt")
         messages = [
                        {"role": "system", "content": prompt},
-                       {"role": "user", "content": f"You are playing with stone '{self.player_number}'.\nYour turn. Here is the current state of the board:\n{to_string_board(board)}"}
+                       {"role": "user", "content": f"You are playing with stone '{self.player_number}'.\nYour turn. Here is the history of the game:\n{record.to_kifu()}"}
                    ] + self.history
         client = OpenAI(api_key=OPENAI_API_KEY)
         response = client.chat.completions.create(
@@ -25,4 +26,4 @@ class OpenAiGptFourTurboPlayer(LLMPlayer):
             response_format={"type": "json_object"}
         )
         json_response = json.loads(response.choices[0].message.content.strip())
-        return json_response['x'], json_response['y']
+        return convert_kifu_to_coord(json_response['position'])
