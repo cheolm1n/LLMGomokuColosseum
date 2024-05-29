@@ -9,12 +9,13 @@ class MoveLog:
     match_id: str
     color: str
     order: int
-    x: int
-    y: int
     time_spent: int
     moved: int
     valid: int
     retry_count: int
+    x: int
+    y: int
+    reason: str
 
 
 class MoveLogger:
@@ -25,7 +26,7 @@ class MoveLogger:
         self.move_logs.append(move_log)
 
     def append_to_csv(self):
-        headers = ["match_id", "color", "order", "x", "y", "time_spent", "moved", "valid", "retry_count"]
+        headers = ["match_id", "color", "order", "time_spent", "moved", "valid", "retry_count", "x", "y", "reason"]
         with open("move_log.csv", "a") as f:
             writer = csv.DictWriter(f, fieldnames=headers)
             if not os.path.isfile("move_log.csv") or os.path.getsize("move_log.csv") == 0:
@@ -48,12 +49,13 @@ if __name__ == "__main__":
             match_id='test2',
             color='black',
             order=1,
-            x=0,
-            y=0,
             time_spent=1,
             moved=1,
             valid=1,
-            retry_count=0
+            retry_count=0,
+            x=0,
+            y=0,
+            reason='test'
         )
     )
     move_logger.append_log(
@@ -61,13 +63,13 @@ if __name__ == "__main__":
             match_id='test2',
             color='black',
             order=1,
-            x=0,
-            y=0,
             time_spent=1,
             moved=1,
             valid=1,
-            retry_count=0
+            retry_count=0,
+            x=0,
+            y=0,
+            reason='test'
         )
     )
     move_logger.append_to_csv()
-

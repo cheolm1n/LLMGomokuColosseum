@@ -64,13 +64,13 @@ class Game:
 
         while move_count < 15 * 15:
             move_before = get_now_unix_ms()
-            x, y = current_player.get_move(game_record)
+            x, y, reason = current_player.get_move(game_record)
             move_after = get_now_unix_ms()
             if board[x, y] == 0:
                 board[x, y] = current_player.player_number
                 move_count += 1
-                print(f"\nPlayer {current_player.player_number} move:")
-                print_board(board)
+                print(f"\nPlayer {current_player.player_number} move : ({x}, {y}), reason : {reason}")
+                print_board(board, (x, y), current_player.player_number)
 
                 if log_move:
                     self.move_logger.append_log(
@@ -78,12 +78,14 @@ class Game:
                             match_id=match_id,
                             color=get_color_from_player(current_player),
                             order=move_count,
-                            x=x,
-                            y=y,
+
                             time_spent=move_after - move_before,
                             moved=move_after,
                             valid=1,
-                            retry_count=retry_count
+                            retry_count=retry_count,
+                    x=x,
+                    y=y,
+                    reason=reason
                         )
                     )
                 game_record.add(player=current_player, x=x, y=y, valid=True)
@@ -101,12 +103,14 @@ class Game:
                             match_id=match_id,
                             color=get_color_from_player(current_player),
                             order=move_count,
-                            x=x,
-                            y=y,
+
                             time_spent=move_after - move_before,
                             moved=move_after,
                             valid=0,
-                            retry_count=retry_count
+                            retry_count=retry_count,
+                    x=x,
+                    y=y,
+                    reason=reason
                         )
                     )
                 retry_count += 1

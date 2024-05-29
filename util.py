@@ -16,9 +16,18 @@ def to_string_board(board):
 
 
 # 보드 상태를 사람이 보기 좋게 변환 합니다.
-def print_board(board):
-    for row in board:
-        print(" ".join('●' if x == 1 else '○' if x == 2 else '·' for x in row))
+def print_board(board, current_move, player):
+    # 맨 위에 열 번호 출력, 0부터 시작
+    print("  " + " ".join(str(y).rjust(2) for y in range(len(board[0]))))
+    # 각 행을 출력, 행 번호도 0부터 시작
+    for x, row in enumerate(board):
+        formatted_row = ""
+        for y, cell in enumerate(row):
+            if (x, y) == current_move:
+                formatted_row += "★ " if player == 1 else "☆ "
+            else:
+                formatted_row += '● ' if cell == 1 else '○ ' if cell == 2 else '· '
+        print(str(x).rjust(2) + " " + formatted_row)
 
 
 # 파일을 읽어옵니다.
@@ -50,12 +59,12 @@ def get_color_from_player(player: LLMPlayer) -> str:
 
 
 def convert_kifu_to_coord(position: str) -> tuple[int, int]:
-    if len(position) != 2 and len(position) != 3:
-        raise ValueError(f"Position not valid: {position}")
-
+    # if len(position) != 2 and len(position) != 3:
+    #     raise ValueError(f"Position not valid: {position}")
+    #
     position_col, position_row = position[:1], position[1:]
-    if position_col not in BOARD_COLUMNS or not (1 <= int(position_row) <= 15):
-        raise ValueError(f"Position not valid: {position}")
+    # if position_col not in BOARD_COLUMNS or not (1 <= int(position_row) <= 15):
+    #     raise ValueError(f"Position not valid: {position}")
 
     return int(position_row) - 1, BOARD_COLUMNS.index(position_col)
 

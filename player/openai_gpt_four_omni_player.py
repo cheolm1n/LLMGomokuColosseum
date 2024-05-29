@@ -10,7 +10,7 @@ from util import read_file, to_string_board, convert_kifu_to_coord
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 
-class OpenAiGptFourTurboPlayer(LLMPlayer):
+class OpenAiGptFourOmniPlayer(LLMPlayer):
     def get_move(self, record: Record):
         prompt = read_file("gomoku_prompt.txt")
         messages = [
@@ -19,7 +19,7 @@ class OpenAiGptFourTurboPlayer(LLMPlayer):
                    ] + self.history
         client = OpenAI(api_key=OPENAI_API_KEY)
         response = client.chat.completions.create(
-            model="gpt-4-turbo",
+            model="gpt-4o",
             messages=messages,
             temperature=1.0,
             max_tokens=3000,

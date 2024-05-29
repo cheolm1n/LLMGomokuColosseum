@@ -25,4 +25,4 @@ class ClaudeOpusPlayer(LLMPlayer):
             messages=messages
         )
         json_response = json.loads(response.content[0].text)
-        return convert_kifu_to_coord(json_response['position'])
+        return *convert_kifu_to_coord(json_response['position']), json_response['reason']
