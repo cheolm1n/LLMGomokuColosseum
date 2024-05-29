@@ -123,7 +123,7 @@ class Game:
                                                        "You can only place stones where not presented before. "
                                                        "Please move to another location. There is no need for apologies or excuses. "
                                                        "Please respond only with Kifu notation in json format like {\"position\": \"F10\"}."
-                                                       "alphabet is in between A from P (Note that the I is not included). and number is in between 1 from 15"
+                                                       "alphabet is in between A from P. and number is in between 1 from 15"
                                                        "Please move to another location. "
                                             })
 
