@@ -24,4 +24,4 @@ class ClaudeOpusPlayer(LLMPlayer):
             messages=messages
         )
         json_response = json.loads(response.content[0].text)
-        return json_response['x'], json_response['y']
+        return json_response['x'], json_response['y'], json_response['reason']

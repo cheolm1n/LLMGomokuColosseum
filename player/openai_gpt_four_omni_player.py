@@ -25,4 +25,4 @@ class OpenAiGptFourOmniPlayer(LLMPlayer):
             response_format={"type": "json_object"}
         )
         json_response = json.loads(response.choices[0].message.content.strip())
-        return json_response['x'], json_response['y']
+        return json_response['x'], json_response['y'], json_response['reason']

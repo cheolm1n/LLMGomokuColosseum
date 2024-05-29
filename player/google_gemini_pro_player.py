@@ -34,4 +34,4 @@ class GoogleGeminiProPlayer(LLMPlayer):
                                               temperature=1.0)
                                           )
         json_response = json.loads(response.text)
-        return json_response['x'], json_response['y']
+        return json_response['x'], json_response['y'], json_response['reason']
