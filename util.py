@@ -58,13 +58,17 @@ def get_color_from_player(player: LLMPlayer) -> str:
     return "black" if player.player_number == 1 else "white"
 
 
+class InvalidPositionException(Exception):
+    pass
+
+
 def convert_kifu_to_coord(position: str) -> tuple[int, int]:
-    # if len(position) != 2 and len(position) != 3:
-    #     raise ValueError(f"Position not valid: {position}")
-    #
+    if len(position) != 2 and len(position) != 3:
+        raise InvalidPositionException()
+
     position_col, position_row = position[:1], position[1:]
-    # if position_col not in BOARD_COLUMNS or not (1 <= int(position_row) <= 15):
-    #     raise ValueError(f"Position not valid: {position}")
+    if position_col not in BOARD_COLUMNS or not (1 <= int(position_row) <= 15):
+        raise InvalidPositionException()
 
     return int(position_row) - 1, BOARD_COLUMNS.index(position_col)
 

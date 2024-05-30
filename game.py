@@ -6,7 +6,7 @@ from log.match import MatchLogger, MatchLog
 from log.move import MoveLogger, MoveLog
 from player.llm_player import LLMPlayer
 from record import Record
-from util import print_board, get_now_unix_ms, get_color_from_player, convert_coord_to_kifu
+from util import print_board, get_now_unix_ms, get_color_from_player, convert_coord_to_kifu, InvalidPositionException
 
 
 # 현재 보드 상태에서 승자를 판단합니다.
@@ -64,9 +64,18 @@ class Game:
 
         while move_count < 15 * 15:
             move_before = get_now_unix_ms()
-            x, y, reason = current_player.get_move(game_record)
+            position_valid = True
+
+            try:
+                x, y, reason = current_player.get_move(game_record)
+                if board[x, y] > 0:
+                    position_valid = False
+            except (InvalidPositionException, KeyError):
+                position_valid = False
+
             move_after = get_now_unix_ms()
-            if board[x, y] == 0:
+
+            if position_valid:
                 board[x, y] = current_player.player_number
                 move_count += 1
                 print(f"\nPlayer {current_player.player_number} move : ({x}, {y}), reason : {reason}")
