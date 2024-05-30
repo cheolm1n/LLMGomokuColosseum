@@ -18,9 +18,9 @@ def to_string_board(board):
 # 보드 상태를 사람이 보기 좋게 변환 합니다.
 def print_board(board, current_move, player):
     # 맨 위에 열 번호 출력, 0부터 시작
-    print("  " + " ".join(str(y).rjust(2) for y in range(len(board[0]))))
+    print("  " + "".join(BOARD_COLUMNS[y].rjust(2) for y in range(len(board[0]))))
     # 각 행을 출력, 행 번호도 0부터 시작
-    for x, row in enumerate(board):
+    for x, row in enumerate(board, start=1):
         formatted_row = ""
         for y, cell in enumerate(row):
             if (x, y) == current_move:
