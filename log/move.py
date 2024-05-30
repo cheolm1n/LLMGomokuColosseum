@@ -19,29 +19,32 @@ class MoveLog:
 
 
 class MoveLogger:
-    move_logs: list[MoveLog] = []
+    def __init__(self):
+        self.move_logs: list[MoveLog] = []
 
-    @classmethod
-    def append_log(cls, move_log: MoveLog):
-        cls.move_logs.append(move_log)
+    def append_log(self, move_log: MoveLog):
+        self.move_logs.append(move_log)
 
-    @classmethod
-    def append_to_csv(cls):
+    def append_to_csv(self):
         headers = ["match_id", "color", "order", "time_spent", "moved", "valid", "retry_count", "x", "y", "reason"]
         with open("move_log.csv", "a") as f:
             writer = csv.DictWriter(f, fieldnames=headers)
             if not os.path.isfile("move_log.csv") or os.path.getsize("move_log.csv") == 0:
                 writer.writeheader()
 
-            for log in cls.move_logs:
+            for log in self.move_logs:
                 writer.writerow(log.__dict__)
 
-        cls.move_logs.clear()
+        self.move_logs.clear()
+
+    def clear(self):
+        self.move_logs.clear()
 
 
 if __name__ == "__main__":
+    move_logger = MoveLogger()
     # test
-    MoveLogger.append_log(
+    move_logger.append_log(
         MoveLog(
             match_id='test2',
             color='black',
@@ -55,7 +58,7 @@ if __name__ == "__main__":
             reason='test'
         )
     )
-    MoveLogger.append_log(
+    move_logger.append_log(
         MoveLog(
             match_id='test2',
             color='black',
@@ -69,4 +72,4 @@ if __name__ == "__main__":
             reason='test'
         )
     )
-    MoveLogger.append_to_csv()
+    move_logger.append_to_csv()

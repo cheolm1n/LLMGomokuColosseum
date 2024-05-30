@@ -36,7 +36,8 @@ def main():
     player2 = OpenAiGptFourTurboPlayer(2)
     # player2 = OpenAiGptThreeDotFiveTurboPlayer(2)
 
-    winner = play_game(player1, player2)
+    game = Game(player1, player2)
+    winner = game.play()
     if winner:
         print(f"Player {winner} wins the match!")
 ```

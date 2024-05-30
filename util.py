@@ -1,5 +1,9 @@
 from time import time
 
+from player.llm_player import LLMPlayer
+
+
+BOARD_COLUMNS = list("ABCDEFGHIJKLMNO")
 
 # 보드 상태를 문자열로 변환 합니다.
 def to_string_board(board):
@@ -48,3 +52,26 @@ def convert_string_format(data_as_is):
 
 def get_now_unix_ms():
     return round(time() * 1000)
+
+
+def get_color_from_player(player: LLMPlayer) -> str:
+    return "black" if player.player_number == 1 else "white"
+
+
+class InvalidPositionException(Exception):
+    pass
+
+
+def convert_kifu_to_coord(position: str) -> tuple[int, int]:
+    if len(position) != 2 and len(position) != 3:
+        raise InvalidPositionException()
+
+    position_col, position_row = position[:1], position[1:]
+    if position_col not in BOARD_COLUMNS or not (1 <= int(position_row) <= 15):
+        raise InvalidPositionException()
+
+    return int(position_row) - 1, BOARD_COLUMNS.index(position_col)
+
+
+def convert_coord_to_kifu(x: int, y: int) -> str:
+    return f"{BOARD_COLUMNS[y]}{x + 1}"
