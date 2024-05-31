@@ -10,7 +10,7 @@ from util import to_string_board, read_file, convert_kifu_to_coord
 class MetaLlamaThree70BInstructPlayer(LLMPlayer):
     def get_move(self, record: Record):
         prompt = read_file("gomoku_prompt.txt")
-        content = f"{prompt}\nYou are playing with stone '{self.player_number}'.\nYour turn. Here is the history of the game (There is no history in the first move):\n{record.to_kifu()}"
+        content = f"{prompt}\nYou are playing with stone '{self.player_number}'.\nYour turn. Here is the history of the game (There is no history in the first move):\n{record.get_kifu_for(self.player_number)}"
         messages = [
             {"role": "user", "content": content}
         ]

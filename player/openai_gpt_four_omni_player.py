@@ -15,7 +15,7 @@ class OpenAiGptFourOmniPlayer(LLMPlayer):
         prompt = read_file("gomoku_prompt.txt")
         messages = [
                        {"role": "system", "content": prompt},
-                       {"role": "user", "content": f"You are playing with stone '{self.player_number}'.\nYour turn. Here is the history of the game (There is no history in the first move):\n{record.to_kifu()}"}
+                       {"role": "user", "content": f"You are playing with stone '{self.player_number}'.\nYour turn. Here is the history of the game (There is no history in the first move):\n{record.get_kifu_for(self.player_number)}"}
                    ] + self.history
         client = OpenAI(api_key=OPENAI_API_KEY)
         response = client.chat.completions.create(
