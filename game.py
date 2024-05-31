@@ -97,7 +97,7 @@ class Game:
                     reason=reason
                         )
                     )
-                game_record.add(player=current_player, x=x, y=y, valid=True)
+                game_record.add(player=current_player, x=x, y=y, valid=True, reason=reason)
                 if check_winner(board, current_player.player_number):
                     print(f"Player {current_player.player_number} wins!")
                     break
@@ -129,7 +129,7 @@ class Game:
                     current_player = self.player2 if current_player == self.player1 else self.player1
                     retry_count = 0
                     current_player.history.clear()
-                    game_record.add(player=current_player, x=-1, y=-1, valid=False)
+                    game_record.add(player=current_player, x=-1, y=-1, valid=False, reason=None)
                 current_player.add_history({"role": "assistant", "content": f"{convert_coord_to_kifu(x=x, y=y)}"})
                 current_player.add_history({"role": "user",
                                             "content": "You just made a wrong move. Another stone has already been placed there. "
