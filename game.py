@@ -35,7 +35,7 @@ class Game:
         self.move_logger = None
         self.record = Record()
 
-    def play(self, log_move=True, log_match=True) -> int:
+    def play(self, log_move=True, log_match=True) -> LLMPlayer:
         # initialize move_logger
         if log_move:
             if not self.move_logger:
@@ -160,4 +160,4 @@ class Game:
         if log_move:
             self.move_logger.append_to_csv()
 
-        return current_player.player_number
+        return current_player
