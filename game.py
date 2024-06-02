@@ -6,7 +6,7 @@ from log.match import MatchLogger, MatchLog
 from log.move import MoveLogger, MoveLog
 from player.llm_player import LLMPlayer
 from record import Record
-from util import print_board, get_now_unix_ms, get_color_from_player, convert_coord_to_kifu, InvalidPositionException
+from util import print_board, get_now_unix_ms, get_color_from_player, convert_coord_to_kifu, InvalidPositionException, get_stone
 
 
 # 현재 보드 상태에서 승자를 판단합니다.
@@ -78,7 +78,8 @@ class Game:
             if position_valid:
                 board[x, y] = current_player.player_number
                 move_count += 1
-                print(f"\nPlayer {current_player.player_number} move : ({x}, {y}), reason : {reason}")
+                stone = get_stone(current_player)
+                print(f"\nPlayer {current_player.player_number}({stone}) move : {convert_coord_to_kifu(x=x, y=y)}, reason : {reason}")
                 print_board(board, (x, y), current_player.player_number)
 
                 if log_move:
@@ -99,7 +100,7 @@ class Game:
                     )
                 game_record.add(player=current_player, x=x, y=y, valid=True, reason=reason)
                 if check_winner(board, current_player.player_number):
-                    print(f"Player {current_player.player_number} wins!")
+                    print(f"Player {current_player.player_number}({stone}) wins!")
                     break
 
                 current_player = self.player2 if current_player == self.player1 else self.player1
@@ -161,3 +162,4 @@ class Game:
             self.move_logger.append_to_csv()
 
         return current_player
+

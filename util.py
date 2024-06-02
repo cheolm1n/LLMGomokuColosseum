@@ -75,3 +75,7 @@ def convert_kifu_to_coord(position: str) -> tuple[int, int]:
 
 def convert_coord_to_kifu(x: int, y: int) -> str:
     return f"{BOARD_COLUMNS[y]}{x + 1}"
+
+
+def get_stone(current_player: LLMPlayer) -> str:
+    return "●" if current_player.player_number == 1 else "○"
