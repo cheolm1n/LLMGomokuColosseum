@@ -10,8 +10,6 @@ from player.llm_player import LLMPlayer
 from util import InvalidPositionException
 from record import Record
 
-import asyncio
-
 
 def obvious_record(test_player: LLMPlayer) -> Record:
     opponent_player = OpenAiGptThreeDotFiveTurboPlayer(2)
@@ -27,23 +25,7 @@ def obvious_record(test_player: LLMPlayer) -> Record:
     return record
 
 
-async def test_player(test_player: LLMPlayer, repeat: int, winning_position: tuple[int, int], results: dict[str, list[bool]]):
-    name = test_player.__class__.__name__
-    results[name] = []
-    record = obvious_record(test_player)
-    for _ in range(repeat):
-        win = False
-        try:
-            res_x, res_y, _ = test_player.get_move(record)
-            if (res_x, res_y) == winning_position:
-                win = True
-        except (InvalidPositionException, KeyError):
-            win = False
-        
-        results[name].append(win)
-
-
-async def main():
+def test():
     repeat = 10
     winning_position = (7, 11)
     test_players: list[LLMPlayer] = [
@@ -56,12 +38,25 @@ async def main():
     ]
     results: dict[str, list[bool]] = {}
 
-    tasks = [test_player(player, repeat, winning_position, results) for player in test_players]
-    await asyncio.gather(*tasks)
+    for test_player in test_players:
+        name = test_player.__class__.__name__
+        results[name] = []
+        record = obvious_record(test_player)
+        for _ in range(repeat):
+            win = False
+            try:
+                res_x, res_y, _ = test_player.get_move(record)
+                if (res_x, res_y) == winning_position:
+                    win = True
+            except (InvalidPositionException, KeyError):
+                win = False
+            
+            results[name].append(win)
 
     for name, result in results.items():
         print(f"name: {name}, win: {result.count(True)}/{len(result)}")
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    test()
+    
