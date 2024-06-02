@@ -139,7 +139,7 @@ class Game:
                                                        "horizontal sequence from F8 to I8. By placing a stone at E8, I can further extend the horizontal sequence and create a strong threat. # "
                                                        "Winning Move: Continue building the horizontal sequence from F8 to I8 by placing a stone at E8. # Best Move: E8 # Reason: Extending the "
                                                        "horizontal sequence increases the chances of creating a winning pattern in the future.\"}."
-                                                       "Alphabet(as columns) is in between A from O. and number(as rows) is in between 1 from 15"
+                                                       "Alphabet(as columns) is in between A from O. and number(as rows) is in between 1 from 15."
                                                        "Please move to another location. "
                                             })
 
