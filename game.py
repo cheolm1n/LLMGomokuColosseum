@@ -1,3 +1,5 @@
+import json
+
 import numpy as np
 
 from uuid import uuid4
@@ -130,7 +132,7 @@ class Game:
                     retry_count = 0
                     current_player.history.clear()
                     game_record.add(player=current_player, x=-1, y=-1, valid=False)
-                current_player.add_history({"role": "assistant", "content": f"{convert_coord_to_kifu(x=x, y=y)}"})
+                current_player.add_history({"role": "assistant", "content": json.dumps({'position': convert_coord_to_kifu(x=x, y=y), "reason": reason})})
                 current_player.add_history({"role": "user",
                                             "content": "You just made a wrong move. Another stone has already been placed there. "
                                                        "You can only place stones where not presented before. "
