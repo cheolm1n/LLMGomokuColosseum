@@ -135,8 +135,11 @@ class Game:
                                             "content": "You just made a wrong move. Another stone has already been placed there. "
                                                        "You can only place stones where not presented before. "
                                                        "Please move to another location. There is no need for apologies or excuses. "
-                                                       "Please respond only with Kifu notation in json format like {\"position\": \"F10\"}."
-                                                       "alphabet is in between A from P. and number is in between 1 from 15"
+                                                       "Please respond only with Kifu notation in json format like {\"position\": \"F10\", \"reason\":\"# Current Sequences: Player 1 has a "
+                                                       "horizontal sequence from F8 to I8. By placing a stone at E8, I can further extend the horizontal sequence and create a strong threat. # "
+                                                       "Winning Move: Continue building the horizontal sequence from F8 to I8 by placing a stone at E8. # Best Move: E8 # Reason: Extending the "
+                                                       "horizontal sequence increases the chances of creating a winning pattern in the future.\"}."
+                                                       "Alphabet(as columns) is in between A from O. and number(as rows) is in between 1 from 15"
                                                        "Please move to another location. "
                                             })
 
