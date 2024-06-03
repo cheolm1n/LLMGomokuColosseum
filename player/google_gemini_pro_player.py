@@ -15,7 +15,7 @@ class GoogleGeminiProPlayer(LLMPlayer):
         genai.configure(api_key=GOOGLE_API_KEY)
         model = genai.GenerativeModel('gemini-pro')
         prompt = read_file("gomoku_prompt.txt")
-        content = f"{prompt}\nYou are playing with stone '{self.player_number}'.\nYour turn. Here is the history of the game (There is no history in the first move):\n{record.to_kifu()}"
+        content = f"{prompt}\nYou are playing with stone '{self.player_number}'.\nYour turn. Here is the history of the game (There is no history in the first move):\n{record.get_kifu_for(self.player_number)}"
         messages = content + convert_string_format(self.history)
         # converted_history = convert_data_format(self.history)
         # messages = ([

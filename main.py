@@ -19,7 +19,7 @@ async def main():
     # player2 = GoogleGeminiProPlayer(2)
     player2 = OpenAiGptFourOmniPlayer(2)
     # player2 = OpenAiGptThreeDotFiveTurboPlayer(2)
-    # player2 = MetaLlamaThree70BInstructPlayer(1)
+    # player2 = MetaLlamaThree70BInstructPlayer(2)
 
     game = Game(player1, player2)
     winner = await game.play(log_move=True, log_match=True)
