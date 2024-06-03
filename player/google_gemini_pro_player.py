@@ -11,7 +11,7 @@ GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
 
 
 class GoogleGeminiProPlayer(LLMPlayer):
-    def get_move(self, record: Record):
+    async def get_move(self, record: Record):
         genai.configure(api_key=GOOGLE_API_KEY)
         model = genai.GenerativeModel('gemini-pro')
         prompt = read_file("gomoku_prompt.txt")
@@ -29,7 +29,7 @@ class GoogleGeminiProPlayer(LLMPlayer):
         # chat = model.start_chat(history=messages)
         # response = chat.send_message("Now it's your turn.")
 
-        response = model.generate_content(messages,
+        response = await model.generate_content_async(messages,
                                           generation_config=genai.types.GenerationConfig(
                                               candidate_count=1,
                                               temperature=1.0)

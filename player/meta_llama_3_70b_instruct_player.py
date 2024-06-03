@@ -1,6 +1,6 @@
 import json
 
-from friendli import Friendli
+from friendli import AsyncFriendli
 
 from player.llm_player import LLMPlayer
 from record import Record
@@ -8,15 +8,15 @@ from util import to_string_board, read_file, convert_kifu_to_coord
 
 
 class MetaLlamaThree70BInstructPlayer(LLMPlayer):
-    def get_move(self, record: Record):
+    async def get_move(self, record: Record):
         prompt = read_file("gomoku_prompt.txt")
         content = f"{prompt}\nYou are playing with stone '{self.player_number}'.\nYour turn. Here is the history of the game (There is no history in the first move):\n{record.to_kifu()}"
         messages = [
             {"role": "user", "content": content}
         ]
-        client = Friendli()
+        client = AsyncFriendli()
 
-        response = client.chat.completions.create(
+        response = await client.chat.completions.create(
             model="meta-llama-3-70b-instruct",
             messages=messages,
             temperature=1.0,

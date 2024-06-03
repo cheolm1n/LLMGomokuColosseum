@@ -35,7 +35,7 @@ class Game:
         self.move_logger = None
         self.record = Record()
 
-    def play(self, log_move=True, log_match=True) -> LLMPlayer:
+    async def play(self, log_move=True, log_match=True) -> LLMPlayer:
         # initialize move_logger
         if log_move:
             if not self.move_logger:
@@ -67,7 +67,7 @@ class Game:
             position_valid = True
 
             try:
-                x, y, reason = current_player.get_move(game_record)
+                x, y, reason = await current_player.get_move(game_record)
                 if board[x, y] > 0:
                     position_valid = False
             except (InvalidPositionException, KeyError):

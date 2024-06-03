@@ -1,7 +1,7 @@
 import json
 import os
 
-from openai import OpenAI
+from openai import AsyncOpenAI
 
 from player.llm_player import LLMPlayer
 from record import Record
@@ -11,14 +11,14 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 
 class OpenAiGptFourTurboPlayer(LLMPlayer):
-    def get_move(self, record: Record):
+    async def get_move(self, record: Record):
         prompt = read_file("gomoku_prompt.txt")
         messages = [
                        {"role": "system", "content": prompt},
                        {"role": "user", "content": f"You are playing with stone '{self.player_number}'.\nYour turn. Here is the history of the game (There is no history in the first move):\n{record.to_kifu()}"}
                    ] + self.history
-        client = OpenAI(api_key=OPENAI_API_KEY)
-        response = client.chat.completions.create(
+        client = AsyncOpenAI(api_key=OPENAI_API_KEY)
+        response = await client.chat.completions.create(
             model="gpt-4-turbo",
             messages=messages,
             temperature=1.0,

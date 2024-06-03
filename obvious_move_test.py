@@ -9,6 +9,7 @@ from player.meta_llama_3_70b_instruct_player import MetaLlamaThree70BInstructPla
 from player.llm_player import LLMPlayer
 from util import InvalidPositionException
 from record import Record
+import asyncio
 
 
 def obvious_record(test_player: LLMPlayer) -> Record:
@@ -25,7 +26,24 @@ def obvious_record(test_player: LLMPlayer) -> Record:
     return record
 
 
-def test():
+async def test_player_async(test_player: LLMPlayer, repeat: int, winning_position: tuple[int, int], results: dict[str, list[bool]]):
+    name = test_player.__class__.__name__
+    results[name] = []
+    record = obvious_record(test_player)
+    for i in range(repeat):
+        win = False
+        try:
+            res_x, res_y, _ = await test_player.get_move(record)
+            print(f"{name}: {i+1}/{repeat}")
+            if (res_x, res_y) == winning_position:
+                win = True
+        except (InvalidPositionException, KeyError):
+            win = False
+
+        results[name].append(win)
+
+
+async def test():
     repeat = 10
     winning_position = (7, 11)
     test_players: list[LLMPlayer] = [
@@ -38,25 +56,14 @@ def test():
     ]
     results: dict[str, list[bool]] = {}
 
-    for test_player in test_players:
-        name = test_player.__class__.__name__
-        results[name] = []
-        record = obvious_record(test_player)
-        for _ in range(repeat):
-            win = False
-            try:
-                res_x, res_y, _ = test_player.get_move(record)
-                if (res_x, res_y) == winning_position:
-                    win = True
-            except (InvalidPositionException, KeyError):
-                win = False
-            
-            results[name].append(win)
+    tasks = [test_player_async(player, repeat, winning_position, results) for player in test_players]
+
+    await asyncio.gather(*tasks)
 
     for name, result in results.items():
         print(f"name: {name}, win: {result.count(True)}/{len(result)}")
 
 
 if __name__ == "__main__":
-    test()
+    asyncio.run(test())
     
