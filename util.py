@@ -23,7 +23,7 @@ def print_board(board, current_move, player):
     for x, row in enumerate(board, start=1):
         formatted_row = ""
         for y, cell in enumerate(row):
-            if (x, y) == current_move:
+            if (x - 1, y) == current_move:
                 formatted_row += "★ " if player == 1 else "☆ "
             else:
                 formatted_row += '● ' if cell == 1 else '○ ' if cell == 2 else '· '
@@ -75,3 +75,7 @@ def convert_kifu_to_coord(position: str) -> tuple[int, int]:
 
 def convert_coord_to_kifu(x: int, y: int) -> str:
     return f"{BOARD_COLUMNS[y]}{x + 1}"
+
+
+def get_stone(current_player: LLMPlayer) -> str:
+    return "●" if current_player.player_number == 1 else "○"

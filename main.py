@@ -11,8 +11,8 @@ def main():
     # player1 = ClaudeOpusPlayer(1)
     # player1 = GoogleGeminiProPlayer(1)
     # player1 = OpenAiGptFourTurboPlayer(1)
-    # player1 = OpenAiGptThreeDotFiveTurboPlayer(1)
-    player1 = MetaLlamaThree70BInstructPlayer(1)
+    player1 = OpenAiGptThreeDotFiveTurboPlayer(1)
+    # player1 = MetaLlamaThree70BInstructPlayer(1)
 
     # player2 = ClaudeOpusPlayer(2)
     # player2 = GoogleGeminiProPlayer(2)
@@ -23,7 +23,7 @@ def main():
     game = Game(player1, player2)
     winner = game.play(log_move=True, log_match=True)
     if winner:
-        print(f"Player {winner} wins the match!")
+        print(f"Player{winner.player_number} [{winner.__class__.__name__}] wins the match!")
 
 
 if __name__ == "__main__":
