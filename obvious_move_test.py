@@ -47,12 +47,12 @@ async def test():
     repeat = 10
     winning_position = (7, 11)
     test_players: list[LLMPlayer] = [
-        OpenAiGptThreeDotFiveTurboPlayer(1),
-        OpenAiGptFourOmniPlayer(1),
-        OpenAiGptFourTurboPlayer(1),
+        # OpenAiGptThreeDotFiveTurboPlayer(1),
+        # OpenAiGptFourOmniPlayer(1),
+        # OpenAiGptFourTurboPlayer(1),
         # ClaudeOpusPlayer(1),
         # GoogleGeminiProPlayer(1),
-        # MetaLlamaThree70BInstructPlayer(1)
+        MetaLlamaThree70BInstructPlayer(1)
     ]
     results: dict[str, list[bool]] = {}
 
