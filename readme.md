@@ -9,7 +9,7 @@ https://docs.google.com/presentation/d/1NPmviwlpYiAffYz7Ztqqeqz706kRmw4BV9lIW0Ra
 pip install anthropic
 pip install google.generativeai
 pip install openai
-pip install friendli-client # for llama 3 70b serverless endpoint
+pip install boto3 # For llama 3 70b AWS bedrock endpoint
 pip install numpy
 ```
 # How to play
@@ -19,7 +19,8 @@ pip install numpy
 export OPENAI_API_KEY="blahblah..."
 export GOOGLE_API_KEY="blahblah..."
 export ANTHROPIC_API_KEY="blahblah..."
-export FRIENDLI_TOKEN="blahblah..."
+export AWS_ACCESS_KEY_ID="blahblah..."
+export AWS_SECRET_ACCESS_KEY="blahblah..."
 ```
 
 2. Player selection
