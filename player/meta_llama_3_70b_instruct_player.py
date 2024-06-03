@@ -1,4 +1,6 @@
+import asyncio
 import json
+from concurrent.futures import ThreadPoolExecutor
 
 import boto3
 
@@ -14,7 +16,7 @@ class MetaLlamaThree70BInstructPlayer(LLMPlayer):
 
     boto = boto3.client(service_name='bedrock-runtime', region_name='us-west-2')  # AWS 클라이언트 생성
 
-    def get_move(self, record: Record):
+    async def get_move(self, record: Record):
         prompt = read_file("gomoku_prompt.txt")
         content = f"{prompt}\nYou are playing with stone '{self.player_number}'.\nYour turn. Here is the history of the game (There is no history in the first move):\n{record.get_kifu_for(self.player_number)}"
         messages = [
@@ -26,9 +28,15 @@ class MetaLlamaThree70BInstructPlayer(LLMPlayer):
             "temperature": 1.0
         })
 
-        response = self.boto.invoke_model(body=body, modelId=self.model_id, accept=self.accept, contentType=self.content_type)
+        loop = asyncio.get_running_loop()
+        with ThreadPoolExecutor() as pool:
+            response = await loop.run_in_executor(pool, self.__invoke_model_sync, body)
+
         json_response = json.loads(json.loads(response.get('body').read()).get('generation'))
         return *convert_kifu_to_coord(json_response['position']), json_response['reason']
+
+    def __invoke_model_sync(self, body: str):
+        return self.boto.invoke_model(body=body, modelId=self.model_id, accept=self.accept, contentType=self.content_type)
 
     @staticmethod
     def __convert_messages_to_llama_prompt(messages):
