@@ -1,4 +1,6 @@
 # 명백히 이길 수 있는 상황에서 이길 수 있는 수를 두는지에 대한 테스트 벤치마크
+import threading
+
 from player.llm_player import LLMPlayer
 from player.openai_gpt_three_dot_five_turbo_player import OpenAiGptThreeDotFiveTurboPlayer
 from player.openai_gpt_four_turbo_player import OpenAiGptFourTurboPlayer
@@ -30,17 +32,32 @@ async def test_player_async(test_player: LLMPlayer, repeat: int, winning_positio
     name = test_player.__class__.__name__
     results[name] = []
     record = obvious_record(test_player)
-    for i in range(repeat):
-        win = False
-        try:
-            res_x, res_y, _ = await test_player.get_move(record)
-            print(f"{name}: {i+1}/{repeat}")
-            if (res_x, res_y) == winning_position:
-                win = True
-        except (InvalidPositionException, KeyError):
-            win = False
 
-        results[name].append(win)
+    # 요청 동시성 제한
+    semaphore = asyncio.Semaphore(5)
+
+    # 결과 도착순서 카운터
+    lock = threading.Lock()
+    count = 0
+
+    async def run_test(i):
+        nonlocal count
+        win = False
+        async with semaphore:
+            try:
+                res_x, res_y, _ = await test_player.get_move(record)
+
+                with lock:
+                    count += 1
+                    print(f"{name}: {count}/{repeat}")
+                if (res_x, res_y) == winning_position:
+                    win = True
+            except (InvalidPositionException, KeyError):
+                win = False
+            results[name].append(win)
+
+    tasks = [run_test(i) for i in range(repeat)]
+    await asyncio.gather(*tasks)
 
 
 async def test():
@@ -48,7 +65,7 @@ async def test():
     winning_position = (7, 11)
     test_players: list[LLMPlayer] = [
         # OpenAiGptThreeDotFiveTurboPlayer(1),
-        # OpenAiGptFourOmniPlayer(1),
+        OpenAiGptFourOmniPlayer(1),
         # OpenAiGptFourTurboPlayer(1),
         # ClaudeOpusPlayer(1),
         # GoogleGeminiProPlayer(1),
