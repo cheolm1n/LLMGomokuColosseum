@@ -69,7 +69,7 @@ class Game:
             position_valid = True
 
             try:
-                x, y, reason = await current_player.get_move(game_record)
+                x, y, position, reason = await current_player.get_move(game_record)
                 if board[x, y] > 0:
                     position_valid = False
             except (InvalidPositionException, KeyError):
@@ -95,9 +95,10 @@ class Game:
                             moved=move_after,
                             valid=1,
                             retry_count=retry_count,
-                    x=x,
-                    y=y,
-                    reason=reason
+                            x=x,
+                            y=y,
+                            position=position,
+                            reason=reason
                         )
                     )
                 game_record.add(player=current_player, x=x, y=y, valid=True, reason=reason)

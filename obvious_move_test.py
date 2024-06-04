@@ -137,7 +137,7 @@ async def test_player_async(test_player: LLMPlayer, problem: Problem, repeat: in
         win = False
         async with semaphore:
             try:
-                res_x, res_y, _ = await test_player.get_move(record)
+                res_x, res_y, *_ = await test_player.get_move(record)
 
                 with lock:
                     count += 1

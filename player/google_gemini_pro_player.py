@@ -35,4 +35,5 @@ class GoogleGeminiProPlayer(LLMPlayer):
                                               temperature=1.0)
                                           )
         json_response = json.loads(response.text)
-        return *convert_kifu_to_coord(json_response['position']), json_response['reason']
+        position = json_response['position']
+        return *convert_kifu_to_coord(position), position, json_response['reason']

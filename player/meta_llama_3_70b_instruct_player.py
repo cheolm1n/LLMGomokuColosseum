@@ -33,7 +33,8 @@ class MetaLlamaThree70BInstructPlayer(LLMPlayer):
             response = await loop.run_in_executor(pool, self.__invoke_model_sync, body)
 
         json_response = json.loads(json.loads(response.get('body').read()).get('generation'))
-        return *convert_kifu_to_coord(json_response['position']), json_response['reason']
+        position = json_response['position']
+        return *convert_kifu_to_coord(position), position, json_response['reason']
 
     def __invoke_model_sync(self, body: str):
         return self.boto.invoke_model(body=body, modelId=self.model_id, accept=self.accept, contentType=self.content_type)

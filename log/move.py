@@ -15,6 +15,7 @@ class MoveLog:
     retry_count: int
     x: int
     y: int
+    position: str
     reason: str
 
 
@@ -26,7 +27,7 @@ class MoveLogger:
         self.move_logs.append(move_log)
 
     def append_to_csv(self):
-        headers = ["match_id", "color", "order", "time_spent", "moved", "valid", "retry_count", "x", "y", "reason"]
+        headers = ["match_id", "color", "order", "time_spent", "moved", "valid", "retry_count", "x", "y", "position", "reason"]
         with open("move_log.csv", "a") as f:
             writer = csv.DictWriter(f, fieldnames=headers)
             if not os.path.isfile("move_log.csv") or os.path.getsize("move_log.csv") == 0:

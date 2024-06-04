@@ -3,7 +3,7 @@ class LLMPlayer:
         self.player_number = player_number
         self.history = []
 
-    async def get_move(self, record) -> tuple[int, int, str]:
+    async def get_move(self, record) -> tuple[int, int, str, str]:
         raise NotImplementedError("This method should be implemented by subclasses.")
 
     def add_history(self, content):
