@@ -66,7 +66,7 @@ class Game:
             position_valid = True
 
             try:
-                x, y, position, reason = await current_player.get_move(game_record)
+                x, y, position, reason, geval_score, geval_reason = await current_player.get_move(game_record)
                 if board[x, y] > 0:
                     position_valid = False
             except (InvalidPositionException, KeyError):
@@ -93,7 +93,9 @@ class Game:
                         x=x,
                         y=y,
                         position=position,
-                        reason=reason
+                        reason=reason,
+                        geval_score=geval_score,
+                        geval_reason=geval_reason
                     )
                 )
                 game_record.add(player=current_player, x=x, y=y, valid=True, reason=reason)
@@ -117,7 +119,9 @@ class Game:
                         x=x,
                         y=y,
                         position=position,
-                        reason=reason
+                        reason=reason,
+                        geval_score=geval_score,
+                        geval_reason=geval_reason
                     )
                 )
                 retry_count += 1
@@ -144,6 +148,7 @@ class Game:
         ended = get_now_unix_ms()
         winner = black if current_player.player_number == self.player1.player_number else white
 
+        geval_avg_total, geval_avg_black, geval_avg_white = move_logger.get_geval_average()
         match_logger.append_log(
             MatchLog(
                 match_id=match_id,
@@ -151,7 +156,10 @@ class Game:
                 black=black,
                 started=started,
                 ended=ended,
-                winner=winner
+                winner=winner,
+                geval_avg_total=geval_avg_total,
+                geval_avg_black=geval_avg_black,
+                geval_avg_white=geval_avg_white
             )
         )
 

@@ -11,12 +11,16 @@ CLAUDE_API_KEY = os.getenv("ANTHROPIC_API_KEY")
 
 
 class ClaudeOpusPlayer(LLMPlayer):
+    def __init__(self, player_number, is_evaluate=False):
+        super().__init__(player_number)
+        self.is_evaluate = is_evaluate
+
     async def get_move(self, record: Record):
         prompt = read_file("gomoku_prompt.txt")
         content = f"{prompt}\nYou are playing with stone '{self.player_number}'.\nYour turn. Here is the history of the game (There is no history in the first move):\n{record.get_kifu_for(self.player_number)}"
         messages = [
-                       {"role": "user", "content": content}
-                   ]
+            {"role": "user", "content": content}
+        ]
         client = AsyncAnthropic(api_key=CLAUDE_API_KEY)
 
         response = await client.messages.create(
@@ -27,4 +31,9 @@ class ClaudeOpusPlayer(LLMPlayer):
         )
         json_response = json.loads(response.content[0].text)
         position = json_response['position']
-        return *convert_kifu_to_coord(position), position, json_response['reason']
+
+        geval_score, geval_reason = {0, ""}
+        if self.is_evaluate:
+            geval_score, geval_reason = self.gen_evaluate(json.dumps(messages), json_response)
+
+        return *convert_kifu_to_coord(position), position, json_response['reason'], geval_score, geval_reason

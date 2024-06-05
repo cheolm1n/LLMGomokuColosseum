@@ -10,6 +10,10 @@ from util import read_file, convert_kifu_to_coord
 
 
 class MetaLlamaThree70BInstructPlayer(LLMPlayer):
+    def __init__(self, player_number, is_evaluate=False):
+        super().__init__(player_number)
+        self.is_evaluate = is_evaluate
+
     model_id = 'meta.llama3-70b-instruct-v1:0'  # Llama 3 70B Instruct 모델 ID
     accept = 'application/json'
     content_type = 'application/json'
@@ -34,7 +38,12 @@ class MetaLlamaThree70BInstructPlayer(LLMPlayer):
 
         json_response = json.loads(json.loads(response.get('body').read()).get('generation'))
         position = json_response['position']
-        return *convert_kifu_to_coord(position), position, json_response['reason']
+
+        geval_score, geval_reason = {0, ""}
+        if self.is_evaluate:
+            geval_score, geval_reason = self.gen_evaluate(json.dumps(messages), json_response)
+
+        return *convert_kifu_to_coord(position), position, json_response['reason'], geval_score, geval_reason
 
     def __invoke_model_sync(self, body: str):
         return self.boto.invoke_model(body=body, modelId=self.model_id, accept=self.accept, contentType=self.content_type)

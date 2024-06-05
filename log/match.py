@@ -13,6 +13,9 @@ class MatchLog:
     started: int
     ended: int
     winner: str
+    geval_avg_total: float
+    geval_avg_black: float
+    geval_avg_white: float
 
 
 class MatchLogger:
@@ -26,7 +29,7 @@ class MatchLogger:
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        headers = ["match_id", "white", "black", "started", "ended", "winner"]
+        headers = ["match_id", "white", "black", "started", "ended", "winner", "geval_avg_total", "geval_avg_black", "geval_avg_white" ]
         if not os.path.exists(os.path.join(os.getcwd(), "logs")):
             os.mkdir(os.path.join(os.getcwd(), "logs"))
 
@@ -55,6 +58,9 @@ if __name__ == "__main__":
                 black='GoogleGeminiProPlayer',
                 started=0,
                 ended=1,
-                winner='ClaudeOpusPlayer'
+                winner='ClaudeOpusPlayer',
+                geval_avg_total=1.0,
+                geval_avg_black=1.0,
+                geval_avg_white=1.0
             )
         )
