@@ -26,4 +26,5 @@ class OpenAiGptFourTurboPlayer(LLMPlayer):
             response_format={"type": "json_object"}
         )
         json_response = json.loads(response.choices[0].message.content.strip())
-        return *convert_kifu_to_coord(json_response['position']), json_response['reason']
+        position = json_response['position']
+        return *convert_kifu_to_coord(position), position, json_response['reason']
