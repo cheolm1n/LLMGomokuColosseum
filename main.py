@@ -22,7 +22,7 @@ async def main():
     # player2 = MetaLlamaThree70BInstructPlayer(2)
 
     game = Game(player1, player2)
-    winner = await game.play(log_move=True, log_match=True)
+    winner = await game.play()
     if winner:
         print(f"Player{winner.player_number} [{winner.__class__.__name__}] wins the match!")
 

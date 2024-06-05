@@ -1,8 +1,10 @@
 import json
+from typing import Optional
 
 import numpy as np
 
 from uuid import uuid4
+from datetime import datetime
 
 from log.match import MatchLogger, MatchLog
 from log.move import MoveLogger, MoveLog
@@ -33,23 +35,18 @@ class Game:
     ):
         self.player1 = player1
         self.player2 = player2
-        self.match_logger = None
-        self.move_logger = None
         self.record = Record()
 
-    async def play(self, log_move=True, log_match=True) -> LLMPlayer:
-        # initialize move_logger
-        if log_move:
-            if not self.move_logger:
-                self.move_logger = MoveLogger()
-            self.move_logger.clear()
+    async def play(self, name: Optional[str] = None) -> LLMPlayer:
+        if name:
+            filename = name
+        else:
+            filename = datetime.now().strftime('%Y%m%d%H%M%S')
 
-        # initialize match_logger
-        if log_match:
-            if not self.match_logger:
-                self.match_logger = MatchLogger()
-            self.match_logger.clear()
+        with MoveLogger(filename) as move_logger, MatchLogger(filename) as match_logger:
+            return await self.__play_game(move_logger=move_logger, match_logger=match_logger)
 
+    async def __play_game(self, move_logger: MoveLogger, match_logger: MatchLogger) -> LLMPlayer:
         # initialize game
         board = np.zeros((15, 15), dtype=int)
         current_player = self.player1
@@ -84,23 +81,22 @@ class Game:
                 print(f"\nPlayer {current_player.player_number}({stone}) move : {convert_coord_to_kifu(x=x, y=y)}, reason : {reason}")
                 print_board(board, (x, y), current_player.player_number)
 
-                if log_move:
-                    self.move_logger.append_log(
-                        MoveLog(
-                            match_id=match_id,
-                            color=get_color_from_player(current_player),
-                            order=move_count,
+                move_logger.append_log(
+                    MoveLog(
+                        match_id=match_id,
+                        color=get_color_from_player(current_player),
+                        order=move_count,
 
-                            time_spent=move_after - move_before,
-                            moved=move_after,
-                            valid=1,
-                            retry_count=retry_count,
-                            x=x,
-                            y=y,
-                            position=position,
-                            reason=reason
-                        )
+                        time_spent=move_after - move_before,
+                        moved=move_after,
+                        valid=1,
+                        retry_count=retry_count,
+                        x=x,
+                        y=y,
+                        position=position,
+                        reason=reason
                     )
+                )
                 game_record.add(player=current_player, x=x, y=y, valid=True, reason=reason)
                 if check_winner(board, current_player.player_number):
                     print(f"Player {current_player.player_number}({stone}) wins!")
@@ -110,22 +106,21 @@ class Game:
                 current_player.history = []  # Clear history for the next player
                 retry_count = 0
             else:
-                if log_move:
-                    self.move_logger.append_log(
-                        MoveLog(
-                            match_id=match_id,
-                            color=get_color_from_player(current_player),
-                            order=move_count,
-
-                            time_spent=move_after - move_before,
-                            moved=move_after,
-                            valid=0,
-                            retry_count=retry_count,
-                    x=x,
-                    y=y,
-                    reason=reason
-                        )
+                move_logger.append_log(
+                    MoveLog(
+                        match_id=match_id,
+                        color=get_color_from_player(current_player),
+                        order=move_count,
+                        time_spent=move_after - move_before,
+                        moved=move_after,
+                        valid=0,
+                        retry_count=retry_count,
+                        x=x,
+                        y=y,
+                        position=position,
+                        reason=reason
                     )
+                )
                 retry_count += 1
                 print(f"Invalid move, {retry_count} try again.")
                 if retry_count >= 3:
@@ -150,22 +145,16 @@ class Game:
         ended = get_now_unix_ms()
         winner = black if current_player.player_number == self.player1.player_number else white
 
-        if log_match:
-            self.match_logger.append_log(
-                MatchLog(
-                    match_id=match_id,
-                    white=white,
-                    black=black,
-                    started=started,
-                    ended=ended,
-                    winner=winner
-                )
+        match_logger.append_log(
+            MatchLog(
+                match_id=match_id,
+                white=white,
+                black=black,
+                started=started,
+                ended=ended,
+                winner=winner
             )
-
-        if log_match:
-            self.match_logger.append_to_csv()
-        if log_move:
-            self.move_logger.append_to_csv()
+        )
 
         return current_player
 
