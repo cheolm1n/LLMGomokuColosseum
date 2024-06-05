@@ -86,7 +86,6 @@ class Game:
                         match_id=match_id,
                         color=get_color_from_player(current_player),
                         order=move_count,
-
                         time_spent=move_after - move_before,
                         moved=move_after,
                         valid=1,
