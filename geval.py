@@ -2,11 +2,10 @@ from deepeval.metrics import GEval
 from deepeval.test_case import LLMTestCaseParams, LLMTestCase
 
 criteria = """
-1. Immediate Win
+1. Immediate Win (Early-game Weight: Low)
 Criterion: The move results in an immediate victory by completing a sequence of five stones in any direction (horizontal, vertical, diagonal).
 Evaluation: Check if placing a stone at the suggested position completes a five-stone sequence for an instant win.
 Example: Placing at I11 completes a vertical sequence and results in an immediate win.
-Exception: This criterion is not evaluated unless the situation requires an immediate victory in the early stages of the game or the current board state.
 
 2. Threat Block
 Criterion: The move effectively blocks an immediate threat from the opponent that could lead to their victory.
@@ -18,7 +17,7 @@ Criterion: The move places a stone in a position that is advantageous for long-t
 Evaluation: Assess whether the move helps to control critical areas of the board, enhancing the player's strategic position.
 Example: Placing a stone to control the center of the board or an important intersection.
 
-4. Connectivity
+4. Connectivity (Early-game Weight: Low)
 Criterion: The move enhances the connectivity of the player's stones, forming potential sequences or strengthening existing ones.
 Evaluation: Check if the move connects well with existing stones to form a stronger formation.
 Example: Extending a sequence from three to four stones, or forming multiple potential lines of attack.
