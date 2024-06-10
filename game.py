@@ -62,14 +62,12 @@ class Game:
         started = get_now_unix_ms()
 
         while move_count < 15 * 15:
-            move_before = get_now_unix_ms()
-            position_valid = True
-
+            move_before, position_valid, x, y, position, reason, geval_score, geval_reason = get_now_unix_ms(), True, None, None, None, None, None, None
             try:
                 x, y, position, reason, geval_score, geval_reason = await current_player.get_move(game_record)
                 if board[x, y] > 0:
                     position_valid = False
-            except (InvalidPositionException, KeyError):
+            except (InvalidPositionException, KeyError, json.JSONDecodeError):
                 position_valid = False
 
             move_after = get_now_unix_ms()
@@ -132,15 +130,15 @@ class Game:
                     retry_count = 0
                     current_player.history.clear()
                     game_record.add(player=current_player, x=-1, y=-1, valid=False, reason=None)
-                current_player.add_history({"role": "assistant", "content": json.dumps({'position': convert_coord_to_kifu(x=x, y=y), "reason": reason})})
+                if x is not None or y is not None or reason is not None:
+                    current_player.add_history({"role": "assistant", "content": json.dumps({'position': convert_coord_to_kifu(x=x, y=y), "reason": reason})})
+                else:
+                    current_player.add_history({"role": "assistant", "content": json.dumps({'position': 'Invalid Format', "reason": 'Invalid Format'})})
                 current_player.add_history({"role": "user",
                                             "content": "You just made a wrong move. Another stone has already been placed there. "
                                                        "You can only place stones where not presented before. "
                                                        "Please move to another location. There is no need for apologies or excuses. "
-                                                       "Please respond only with Kifu notation in json format like {\"position\": \"F10\", \"reason\":\"# Current Sequences: Player 1 has a "
-                                                       "horizontal sequence from F8 to I8. By placing a stone at E8, I can further extend the horizontal sequence and create a strong threat. # "
-                                                       "Winning Move: Continue building the horizontal sequence from F8 to I8 by placing a stone at E8. # Best Move: E8 # Reason: Extending the "
-                                                       "horizontal sequence increases the chances of creating a winning pattern in the future.\"}."
+                                                       "Please respond only with Kifu notation in json format like {\"position\": \"F10\", \"reason\":\"\"}."
                                                        "Alphabet(as columns) is in between A from O. and number(as rows) is in between 1 from 15."
                                                        "Please move to another location. "
                                             })
@@ -152,8 +150,8 @@ class Game:
         match_logger.append_log(
             MatchLog(
                 match_id=match_id,
-                white=white,
                 black=black,
+                white=white,
                 started=started,
                 ended=ended,
                 winner=winner,
@@ -164,4 +162,3 @@ class Game:
         )
 
         return current_player
-
