@@ -53,15 +53,21 @@ class MoveLogger:
         self.move_logs.append(move_log)
 
     def get_geval_average(self):
+        def is_valid_score(score):
+            return isinstance(score, (int, float))
+
         # 모든 move_logs에서 black과 white 플레이어의 geval_score를 분리하여 저장
-        black_scores = [log.geval_score for log in self.move_logs if log.color == 'black']
-        white_scores = [log.geval_score for log in self.move_logs if log.color == 'white']
+        black_scores = [log.geval_score for log in self.move_logs if log.color == 'black' and is_valid_score(log.geval_score)]
+        white_scores = [log.geval_score for log in self.move_logs if log.color == 'white' and is_valid_score(log.geval_score)]
 
         # 각 플레이어의 평균 점수를 계산
-        black_avg = sum(black_scores) / len(black_scores) if black_scores else 0
-        white_avg = sum(white_scores) / len(white_scores) if white_scores else 0
-        total_avg = sum([log.geval_score for log in self.move_logs]) / len(self.move_logs)
-        return {total_avg, black_avg, white_avg}
+        black_avg = sum(black_scores) / len(black_scores) if black_scores else None
+        white_avg = sum(white_scores) / len(white_scores) if white_scores else None
+
+        total_scores = [log.geval_score for log in self.move_logs if is_valid_score(log.geval_score)]
+        total_avg = sum(total_scores) / len(total_scores) if total_scores else None
+
+        return total_avg, black_avg, white_avg
 
 
 if __name__ == "__main__":
