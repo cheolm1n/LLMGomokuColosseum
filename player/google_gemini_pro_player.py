@@ -11,6 +11,10 @@ GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
 
 
 class GoogleGeminiProPlayer(LLMPlayer):
+    def __init__(self, player_number, is_evaluate=False):
+        super().__init__(player_number)
+        self.is_evaluate = is_evaluate
+
     async def get_move(self, record: Record):
         genai.configure(api_key=GOOGLE_API_KEY)
         model = genai.GenerativeModel('gemini-pro')
@@ -36,4 +40,9 @@ class GoogleGeminiProPlayer(LLMPlayer):
                                           )
         json_response = json.loads(response.text)
         position = json_response['position']
-        return *convert_kifu_to_coord(position), position, json_response['reason']
+
+        geval_score, geval_reason = None, None
+        if self.is_evaluate:
+            geval_score, geval_reason = self.gen_evaluate(json.dumps(messages), json_response)
+
+        return *convert_kifu_to_coord(position), position, json_response['reason'], geval_score, geval_reason

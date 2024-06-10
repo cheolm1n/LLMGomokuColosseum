@@ -32,9 +32,8 @@ class OpenAiGptFourTurboPlayer(LLMPlayer):
         json_response = json.loads(response.choices[0].message.content.strip())
         position = json_response['position']
 
-        geval_score, geval_reason = {0, ""}
+        geval_score, geval_reason = None, None
         if self.is_evaluate:
             geval_score, geval_reason = self.gen_evaluate(json.dumps(messages), json_response)
-            print(f"geval_score:{geval_score}, geval_reason:{geval_reason}")
 
         return *convert_kifu_to_coord(position), position, json_response['reason'], geval_score, geval_reason

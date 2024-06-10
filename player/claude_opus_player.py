@@ -32,7 +32,7 @@ class ClaudeOpusPlayer(LLMPlayer):
         json_response = json.loads(response.content[0].text)
         position = json_response['position']
 
-        geval_score, geval_reason = {0, ""}
+        geval_score, geval_reason = None, None
         if self.is_evaluate:
             geval_score, geval_reason = self.gen_evaluate(json.dumps(messages), json_response)
 
