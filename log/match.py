@@ -8,8 +8,8 @@ import os
 @dataclass
 class MatchLog:
     match_id: str
-    white: str
     black: str
+    white: str
     started: int
     ended: int
     winner: str
@@ -29,7 +29,7 @@ class MatchLogger:
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        headers = ["match_id", "white", "black", "started", "ended", "winner", "geval_avg_total", "geval_avg_black", "geval_avg_white" ]
+        headers = ["match_id", "black", "white", "started", "ended", "winner", "geval_avg_total", "geval_avg_black", "geval_avg_white" ]
         if not os.path.exists(os.path.join(os.getcwd(), "logs")):
             os.mkdir(os.path.join(os.getcwd(), "logs"))
 
@@ -54,8 +54,8 @@ if __name__ == "__main__":
         match_logger.append_log(
             MatchLog(
                 match_id='test2',
-                white='ClaudeOpusPlayer',
                 black='GoogleGeminiProPlayer',
+                white='ClaudeOpusPlayer',
                 started=0,
                 ended=1,
                 winner='ClaudeOpusPlayer',
