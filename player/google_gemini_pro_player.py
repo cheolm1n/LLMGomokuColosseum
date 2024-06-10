@@ -1,7 +1,9 @@
 import json
 import os
+import typing
 
 import google.generativeai as genai
+from google.generativeai.types import generation_types
 
 from player.llm_player import LLMPlayer
 from record import Record
@@ -16,24 +18,25 @@ class GoogleGeminiProPlayer(LLMPlayer):
         model = genai.GenerativeModel('gemini-pro')
         prompt = read_file("gomoku_prompt.txt")
         content = f"{prompt}\nYou are playing with stone '{self.player_number}'.\nYour turn. Here is the history of the game (There is no history in the first move):\n{record.get_kifu_for(self.player_number)}"
-        messages = content + convert_string_format(self.history)
-        # converted_history = convert_data_format(self.history)
-        # messages = ([
-        #                {
-        #                    "role": "user",
-        #                    "parts": content
-        #                }
-        #            ]
-        #             + converted_history
-        #             )
-        # chat = model.start_chat(history=messages)
-        # response = chat.send_message("Now it's your turn.")
+
+        messages = [
+            {
+                "role": "user",
+                "parts": [content + convert_string_format(self.history), "Response with ONLY JSON format. Do not include control characters or backquotes in your response."]
+            },
+            {
+                "role": "model",
+                "parts": '{"'
+            }
+        ]
 
         response = await model.generate_content_async(messages,
                                           generation_config=genai.types.GenerationConfig(
                                               candidate_count=1,
-                                              temperature=1.0)
-                                          )
-        json_response = json.loads(response.text)
+                                              temperature=1.0,
+                                          ))
+
+        response_text = '{"' + response.text if not response.text.startswith('{"') else response.text
+        json_response = json.loads(response_text)
         position = json_response['position']
         return *convert_kifu_to_coord(position), position, json_response['reason']
