@@ -45,4 +45,4 @@ uritemplate==4.1.1
 urllib3==2.2.1
 boto3==1.34.117
 botocore==1.34.117
-deepeval~=0.21.49
+deepeval~=0.21.51
