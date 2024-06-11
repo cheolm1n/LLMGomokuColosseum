@@ -9,17 +9,17 @@ import asyncio
 
 
 async def main():
-    # player1 = ClaudeOpusPlayer(1)
-    # player1 = GoogleGeminiProPlayer(1)
-    # player1 = OpenAiGptFourTurboPlayer(1)
-    player1 = OpenAiGptThreeDotFiveTurboPlayer(1)
-    # player1 = MetaLlamaThree70BInstructPlayer(1)
+    # player1 = ClaudeOpusPlayer(1, False)
+    # player1 = GoogleGeminiProPlayer(1, True)
+    # player1 = OpenAiGptFourTurboPlayer(1, False)
+    player1 = OpenAiGptThreeDotFiveTurboPlayer(1, True)
+    # player1 = MetaLlamaThree70BInstructPlayer(1, False)
 
-    # player2 = ClaudeOpusPlayer(2)
-    # player2 = GoogleGeminiProPlayer(2)
-    player2 = OpenAiGptFourOmniPlayer(2)
-    # player2 = OpenAiGptThreeDotFiveTurboPlayer(2)
-    # player2 = MetaLlamaThree70BInstructPlayer(2)
+    # player2 = ClaudeOpusPlayer(2, False)
+    # player2 = GoogleGeminiProPlayer(2, False)
+    player2 = OpenAiGptFourOmniPlayer(2, True)
+    # player2 = OpenAiGptThreeDotFiveTurboPlayer(2, False)
+    # player2 = MetaLlamaThree70BInstructPlayer(2, False)
 
     game = Game(player1, player2)
     winner = await game.play()
