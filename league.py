@@ -29,12 +29,12 @@ async def main():
 
     for i in range(len(players1)):
         for j in range(len(players2)):
-            # 동일한 모델인 경우 경기를 하지 않음
-            if i == j:
-                continue
-
             player1 = players1[i]
             player2 = players2[j]
+
+            # 동일한 모델인 경우 경기를 하지 않음
+            if type(player1) == type(player2):
+                continue
 
             for k in range(1, 4):  # 3판 경기
                 match_description = f"{player1.__class__.__name__} vs {player2.__class__.__name__} - Match {k}"
