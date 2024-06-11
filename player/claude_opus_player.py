@@ -19,8 +19,9 @@ class ClaudeOpusPlayer(LLMPlayer):
         prompt = read_file("gomoku_prompt.txt")
         content = f"{prompt}\nYou are playing with stone '{self.player_number}'.\nYour turn. Here is the history of the game (There is no history in the first move):\n{record.get_kifu_for(self.player_number)}"
         messages = [
-            {"role": "user", "content": content}
-        ]
+                        {"role": "user", "content": content},
+                        {"role": "assistant", "content": "{"}
+                    ]
         client = AsyncAnthropic(api_key=CLAUDE_API_KEY)
 
         response = await client.messages.create(
@@ -29,7 +30,9 @@ class ClaudeOpusPlayer(LLMPlayer):
             max_tokens=3000,
             messages=messages
         )
-        json_response = json.loads(response.content[0].text)
+
+        response_text = response.content[0].text
+        json_response = json.loads("{" + response_text if not response_text.startswith("{") else response_text)
         position = json_response['position']
 
         geval_score, geval_reason = None, None
