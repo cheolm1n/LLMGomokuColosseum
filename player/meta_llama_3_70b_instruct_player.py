@@ -6,7 +6,7 @@ import boto3
 
 from player.llm_player import LLMPlayer
 from record import Record
-from util import read_file, convert_kifu_to_coord
+from util import read_file, convert_kifu_to_coord, get_now_unix_ms
 
 
 class MetaLlamaThree70BInstructPlayer(LLMPlayer):
@@ -32,9 +32,13 @@ class MetaLlamaThree70BInstructPlayer(LLMPlayer):
             "temperature": 1.0
         })
 
+        move_before = get_now_unix_ms()
+
         loop = asyncio.get_running_loop()
         with ThreadPoolExecutor() as pool:
             response = await loop.run_in_executor(pool, self.__invoke_model_sync, body)
+
+        move_after = get_now_unix_ms()
 
         json_response = json.loads(json.loads(response.get('body').read()).get('generation'))
         position = json_response['position']
@@ -43,7 +47,7 @@ class MetaLlamaThree70BInstructPlayer(LLMPlayer):
         if self.is_evaluate:
             geval_score, geval_reason = self.gen_evaluate(json.dumps(messages), json_response)
 
-        return *convert_kifu_to_coord(position), position, json_response['reason'], geval_score, geval_reason
+        return *convert_kifu_to_coord(position), position, json_response['reason'], geval_score, geval_reason, move_after - move_before
 
     def __invoke_model_sync(self, body: str):
         return self.boto.invoke_model(body=body, modelId=self.model_id, accept=self.accept, contentType=self.content_type)

@@ -7,7 +7,7 @@ from google.generativeai.types import generation_types
 
 from player.llm_player import LLMPlayer
 from record import Record
-from util import convert_string_format, read_file, to_string_board, convert_kifu_to_coord
+from util import convert_string_format, read_file, to_string_board, convert_kifu_to_coord, get_now_unix_ms
 
 GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
 
@@ -34,11 +34,15 @@ class GoogleGeminiProPlayer(LLMPlayer):
             }
         ]
 
+        move_before = get_now_unix_ms()
+
         response = await model.generate_content_async(messages,
                                           generation_config=genai.types.GenerationConfig(
                                               candidate_count=1,
                                               temperature=1.0,
                                           ))
+
+        move_after = get_now_unix_ms()
 
         response_text = '{"' + response.text if not response.text.startswith('{"') else response.text
         json_response = json.loads(response_text)
@@ -48,4 +52,4 @@ class GoogleGeminiProPlayer(LLMPlayer):
         if self.is_evaluate:
             geval_score, geval_reason = self.gen_evaluate(json.dumps(messages), json_response)
 
-        return *convert_kifu_to_coord(position), position, json_response['reason'], geval_score, geval_reason
+        return *convert_kifu_to_coord(position), position, json_response['reason'], geval_score, geval_reason, move_after - move_before

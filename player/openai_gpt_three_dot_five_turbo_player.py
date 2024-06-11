@@ -5,7 +5,7 @@ from openai import AsyncOpenAI
 
 from player.llm_player import LLMPlayer
 from record import Record
-from util import read_file, to_string_board, convert_kifu_to_coord
+from util import read_file, to_string_board, convert_kifu_to_coord, get_now_unix_ms
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
@@ -24,6 +24,9 @@ class OpenAiGptThreeDotFiveTurboPlayer(LLMPlayer):
                    ] + self.history
 
         client = AsyncOpenAI(api_key=OPENAI_API_KEY)
+
+        move_before = get_now_unix_ms()
+
         response = await client.chat.completions.create(
             model="gpt-3.5-turbo-0125",
             messages=messages,
@@ -31,6 +34,9 @@ class OpenAiGptThreeDotFiveTurboPlayer(LLMPlayer):
             max_tokens=3000,
             response_format={"type": "json_object"}
         )
+
+        move_after = get_now_unix_ms()
+
         json_response = json.loads(response.choices[0].message.content.strip())
         position = json_response['position']
 
@@ -38,4 +44,4 @@ class OpenAiGptThreeDotFiveTurboPlayer(LLMPlayer):
         if self.is_evaluate:
             geval_score, geval_reason = self.gen_evaluate(json.dumps(messages), json_response)
 
-        return *convert_kifu_to_coord(position), position, json_response['reason'], geval_score, geval_reason
+        return *convert_kifu_to_coord(position), position, json_response['reason'], geval_score, geval_reason, move_after - move_before
