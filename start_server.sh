@@ -1,0 +1,1 @@
+./venv/bin/uvicorn server.server:app
