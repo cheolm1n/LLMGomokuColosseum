@@ -37,16 +37,16 @@ class Game:
         self.player2 = player2
         self.record = Record()
 
-    async def play(self, name: Optional[str] = None) -> LLMPlayer:
+    async def play(self, name: Optional[str] = None, move_callback = None) -> LLMPlayer:
         if name:
             filename = name
         else:
             filename = datetime.now().strftime('%Y%m%d%H%M%S')
 
         with MoveLogger(filename) as move_logger, MatchLogger(filename) as match_logger:
-            return await self.__play_game(move_logger=move_logger, match_logger=match_logger)
+            return await self.__play_game(move_logger=move_logger, match_logger=match_logger, move_callback=move_callback)
 
-    async def __play_game(self, move_logger: MoveLogger, match_logger: MatchLogger) -> LLMPlayer:
+    async def __play_game(self, move_logger: MoveLogger, match_logger: MatchLogger, move_callback) -> LLMPlayer:
         # initialize game
         board = np.zeros((15, 15), dtype=int)
         current_player = self.player1
@@ -65,6 +65,8 @@ class Game:
             position_valid, x, y, position, reason, geval_score, geval_reason = True, None, None, None, None, None, None
             try:
                 x, y, position, reason, geval_score, geval_reason, time_spent = await current_player.get_move(game_record)
+                if move_callback is not None:
+                    await move_callback('move_success', x, y, position, True, current_player.player_number, 0, None)
                 if board[x, y] > 0:
                     position_valid = False
             except (InvalidPositionException, KeyError, json.JSONDecodeError):
@@ -99,6 +101,7 @@ class Game:
                 game_record.add(player=current_player, x=x, y=y, valid=True, reason=reason)
                 if check_winner(board, current_player.player_number):
                     print(f"Player {current_player.player_number}({stone}) wins!")
+                    await move_callback('end', x, y, position, True, current_player.player_number, None, current_player.player_number)
                     break
 
                 current_player = self.player2 if current_player == self.player1 else self.player1
@@ -124,8 +127,10 @@ class Game:
                 )
                 retry_count += 1
                 print(f"Invalid move, {retry_count} try again.")
+                await move_callback('move_invalid', x, y, position, False, current_player.player_number, retry_count, None)
                 if retry_count >= 3:
                     print("3번 착수에 실패하여 다른 플레이어턴으로 넘어갑니다.")
+                    await move_callback('switch_turn', x, y, position, False, current_player.player_number, retry_count, None)
                     current_player = self.player2 if current_player == self.player1 else self.player1
                     retry_count = 0
                     current_player.history.clear()

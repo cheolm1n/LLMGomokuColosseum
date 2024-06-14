@@ -1,0 +1,55 @@
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f5f5f5;
+}
+
+.controls {
+    margin-bottom: 10px;
+}
+
+.board-container {
+    display: grid;
+    grid-template-columns: 20px repeat(15, 30px);
+    grid-template-rows: 20px repeat(15, 30px);
+    margin-bottom: 20px;
+    background-color: #DEB887; /* 나무색 배경 */
+    border: 2px solid #8B4513; /* 짙은 나무색 테두리 */
+}
+
+.cell {
+    width: 30px;
+    height: 30px;
+    background-color: transparent; /* 투명 배경 */
+    border: 1px solid #8B4513; /* 짙은 나무색 선 */
+    box-sizing: border-box;
+    position: relative;
+}
+
+.row-label, .col-label {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+}
+
+.stone {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.stone.black {
+    background-color: black;
+}
+.stone.white {
+    background-color: white;
+    border: 1px solid black;
+}
