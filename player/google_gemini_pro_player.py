@@ -1,37 +1,55 @@
 import json
 import os
+import typing
 
 import google.generativeai as genai
+from google.generativeai.types import generation_types
 
 from player.llm_player import LLMPlayer
-from util import convert_string_format, read_file, to_string_board
+from record import Record
+from util import convert_string_format, read_file, to_string_board, convert_kifu_to_coord, get_now_unix_ms
 
 GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
 
 
 class GoogleGeminiProPlayer(LLMPlayer):
-    def get_move(self, board):
+    def __init__(self, player_number, is_evaluate=False):
+        super().__init__(player_number)
+        self.is_evaluate = is_evaluate
+
+    async def get_move(self, record: Record):
         genai.configure(api_key=GOOGLE_API_KEY)
         model = genai.GenerativeModel('gemini-pro')
         prompt = read_file("gomoku_prompt.txt")
-        content = f"{prompt}\nYou are playing with stone '{self.player_number}'.\nYour turn. Here is the current state of the board:\n{to_string_board(board)}"
-        messages = content + convert_string_format(self.history)
-        # converted_history = convert_data_format(self.history)
-        # messages = ([
-        #                {
-        #                    "role": "user",
-        #                    "parts": content
-        #                }
-        #            ]
-        #             + converted_history
-        #             )
-        # chat = model.start_chat(history=messages)
-        # response = chat.send_message("Now it's your turn.")
+        content = f"{prompt}\nYou are playing with stone '{self.player_number}'.\nYour turn. Here is the history of the game (There is no history in the first move):\n{record.get_kifu_for(self.player_number)}"
 
-        response = model.generate_content(messages,
+        messages = [
+            {
+                "role": "user",
+                "parts": [content + convert_string_format(self.history), "Response with ONLY JSON format. Do not include control characters or backquotes in your response."]
+            },
+            {
+                "role": "model",
+                "parts": '{"'
+            }
+        ]
+
+        move_before = get_now_unix_ms()
+
+        response = await model.generate_content_async(messages,
                                           generation_config=genai.types.GenerationConfig(
                                               candidate_count=1,
-                                              temperature=1.0)
-                                          )
-        json_response = json.loads(response.text)
-        return json_response['x'], json_response['y']
+                                              temperature=1.0,
+                                          ))
+
+        move_after = get_now_unix_ms()
+
+        response_text = '{"' + response.text if not response.text.startswith('{"') else response.text
+        json_response = json.loads(response_text)
+        position = json_response['position']
+
+        geval_score, geval_reason = None, None
+        if self.is_evaluate:
+            geval_score, geval_reason = self.gen_evaluate(json.dumps(messages), json_response)
+
+        return *convert_kifu_to_coord(position), position, json_response['reason'], geval_score, geval_reason, move_after - move_before

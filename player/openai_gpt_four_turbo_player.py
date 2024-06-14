@@ -1,28 +1,45 @@
 import json
 import os
 
-from openai import OpenAI
+from openai import AsyncOpenAI
 
 from player.llm_player import LLMPlayer
-from util import read_file, to_string_board
+from record import Record
+from util import read_file, to_string_board, convert_kifu_to_coord, get_now_unix_ms
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 
 class OpenAiGptFourTurboPlayer(LLMPlayer):
-    def get_move(self, board):
+    def __init__(self, player_number, is_evaluate=False):
+        super().__init__(player_number)
+        self.is_evaluate = is_evaluate
+
+    async def get_move(self, record: Record):
         prompt = read_file("gomoku_prompt.txt")
         messages = [
                        {"role": "system", "content": prompt},
-                       {"role": "user", "content": f"You are playing with stone '{self.player_number}'.\nYour turn. Here is the current state of the board:\n{to_string_board(board)}"}
+                       {"role": "user", "content": f"You are playing with stone '{self.player_number}'.\nYour turn. Here is the history of the game (There is no history in the first move):\n{record.get_kifu_for(self.player_number)}"}
                    ] + self.history
-        client = OpenAI(api_key=OPENAI_API_KEY)
-        response = client.chat.completions.create(
+        client = AsyncOpenAI(api_key=OPENAI_API_KEY)
+
+        move_before = get_now_unix_ms()
+
+        response = await client.chat.completions.create(
             model="gpt-4-turbo",
             messages=messages,
             temperature=1.0,
             max_tokens=3000,
             response_format={"type": "json_object"}
         )
+
+        move_after = get_now_unix_ms()
+
         json_response = json.loads(response.choices[0].message.content.strip())
-        return json_response['x'], json_response['y']
+        position = json_response['position']
+
+        geval_score, geval_reason = None, None
+        if self.is_evaluate:
+            geval_score, geval_reason = self.gen_evaluate(json.dumps(messages), json_response)
+
+        return *convert_kifu_to_coord(position), position, json_response['reason'], geval_score, geval_reason, move_after - move_before
