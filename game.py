@@ -62,9 +62,9 @@ class Game:
         started = get_now_unix_ms()
 
         while move_count < 15 * 15:
-            move_before, position_valid, x, y, position, reason, geval_score, geval_reason = get_now_unix_ms(), True, None, None, None, None, None, None
+            position_valid, x, y, position, reason, geval_score, geval_reason = True, None, None, None, None, None, None
             try:
-                x, y, position, reason, geval_score, geval_reason = await current_player.get_move(game_record)
+                x, y, position, reason, geval_score, geval_reason, time_spent = await current_player.get_move(game_record)
                 if board[x, y] > 0:
                     position_valid = False
             except (InvalidPositionException, KeyError, json.JSONDecodeError):
@@ -84,7 +84,7 @@ class Game:
                         match_id=match_id,
                         color=get_color_from_player(current_player),
                         order=move_count,
-                        time_spent=move_after - move_before,
+                        time_spent=time_spent,
                         moved=move_after,
                         valid=1,
                         retry_count=retry_count,
@@ -110,7 +110,7 @@ class Game:
                         match_id=match_id,
                         color=get_color_from_player(current_player),
                         order=move_count,
-                        time_spent=move_after - move_before,
+                        time_spent=time_spent,
                         moved=move_after,
                         valid=0,
                         retry_count=retry_count,
