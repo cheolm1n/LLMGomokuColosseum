@@ -17,17 +17,17 @@ for (let x = 0; x < size; x++) {
 }
 
 // 왼쪽 행 레이블 및 바둑판 셀 추가
-for (let y = 0; y < size; y++) {
+for (let x = 0; x < size; x++) {
     const rowLabel = document.createElement('div');
     rowLabel.classList.add('row-label');
-    rowLabel.textContent = y + 1;
+    rowLabel.textContent = x + 1;
     boardContainer.appendChild(rowLabel);
 
-    for (let x = 0; x < size; x++) {
+    for (let y = 0; y < size; y++) {
         const cell = document.createElement('div');
         cell.classList.add('cell');
-        cell.dataset.x = x + 1;
-        cell.dataset.y = y + 1;
+        cell.dataset.x = x;
+        cell.dataset.y = y;
         cell.addEventListener('click', handleClick);
         boardContainer.appendChild(cell);
     }
