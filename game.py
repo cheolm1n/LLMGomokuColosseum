@@ -65,8 +65,6 @@ class Game:
             position_valid, x, y, position, reason, geval_score, geval_reason = True, None, None, None, None, None, None
             try:
                 x, y, position, reason, geval_score, geval_reason, time_spent = await current_player.get_move(game_record)
-                if move_callback is not None:
-                    await move_callback('move_success', x, y, position, True, current_player.player_number, 0, None)
                 if board[x, y] > 0:
                     position_valid = False
             except (InvalidPositionException, KeyError, json.JSONDecodeError):
@@ -80,6 +78,8 @@ class Game:
                 stone = get_stone(current_player)
                 print(f"\nPlayer {current_player.player_number}({stone}) move : {convert_coord_to_kifu(x=x, y=y)}, reason : {reason}")
                 print_board(board, (x, y), current_player.player_number)
+                if move_callback is not None:
+                    await move_callback('move_success', x, y, position, True, current_player.player_number, 0, None)
 
                 move_logger.append_log(
                     MoveLog(
