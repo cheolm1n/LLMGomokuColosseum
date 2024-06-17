@@ -1,5 +1,7 @@
 const boardContainer = document.getElementById('board-container');
 const consoleOutput = document.getElementById('console');
+const goSounds = [document.getElementById("goSound1"), document.getElementById("goSound2")];
+const winSound = document.getElementById("winSound");
 const size = 15;
 const letters = 'ABCDEFGHIJKLMNO';
 let turnCount = 0;
@@ -73,6 +75,7 @@ function initWebSocket() {
         if (action === 'move_success') {
             // 돌 놓고 로그
             addStone(x, y, color)
+            goSounds[Math.floor(Math.random() * goSounds.length)].play()
             appendLog(`${playerText} 돌을 놓았습니다 (${position})\n`)
         } else if (action === 'move_invalid') {
             // 로그만
@@ -82,6 +85,7 @@ function initWebSocket() {
             appendLog(`${playerText}의 반복된 실수로 차례가 넘어갑니다!`)
         } else if (action === 'end') {
             appendLog(`${playerText}의 승리!`)
+            winSound.play()
             toggleConfetti()
             setTimeout(toggleConfetti, 1000)
         }
