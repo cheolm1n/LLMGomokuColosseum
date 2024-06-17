@@ -7,33 +7,41 @@
     <link rel="stylesheet" href="static/style.css">
 </head>
 <body>
-<div class="controls">
-    <label>
-        Player1
-        <select id="selectPlayer1">
-            <option value="GPT3.5">GPT3.5</option>
-            <option value="GPT4o">GPT4o</option>
-            <option value="Llama3">Llama3</option>
-            <option value="Gemini">Gemini</option>
-            <option value="Claude">Claude</option>
-        </select>
-    </label>
-    <label>
-        Player2
-        <select id="selectPlayer2">
-            <option value="GPT3.5">GPT3.5</option>
-            <option value="GPT4o">GPT4o</option>
-            <option value="Llama3">Llama3</option>
-            <option value="Gemini">Gemini</option>
-            <option value="Claude">Claude</option>
-        </select>
-    </label>
-    <button id="playButton">Play</button>
-    <button id="stop">Stop</button>
-    <button id="reconnect">Reconnect</button>
+<div class="wrap">
+    <div class="board-container" id="board-container"></div>
+    <div class="controls">
+        <div class="players">
+            <label>
+                Player1
+                <select id="selectPlayer1">
+                    <option value="GPT3.5">GPT3.5</option>
+                    <option value="GPT4o">GPT4o</option>
+                    <option value="Llama3">Llama3</option>
+                    <option value="Gemini">Gemini</option>
+                    <option value="Claude">Claude</option>
+                </select>
+            </label>
+            <label>
+                Player2
+                <select id="selectPlayer2">
+                    <option value="GPT3.5">GPT3.5</option>
+                    <option value="GPT4o">GPT4o</option>
+                    <option value="Llama3">Llama3</option>
+                    <option value="Gemini">Gemini</option>
+                    <option value="Claude">Claude</option>
+                </select>
+            </label>
+        </div>
+        <div class="buttons">
+            <button id="playButton">Play</button>
+            <button id="stop">Stop</button>
+            <button id="reconnect">Reconnect</button>
+        </div>
+        <div class="console">
+            <textarea id="console" rows="20" cols="50"></textarea>
+        </div>
+    </div>
 </div>
-<div class="board-container" id="board-container"></div>
-<textarea id="console" rows="20" cols="50"></textarea>
 <script src="static/script.js"></script>
 </body>
 </html>

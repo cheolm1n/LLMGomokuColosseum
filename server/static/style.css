@@ -1,29 +1,70 @@
 body {
+    background-color: #f5f5f5;
+    --body-padding-y: 100px;
+    padding: var(--body-padding-y) 0;
+    margin: 0;
+}
+.wrap {
     display: flex;
-    flex-direction: column;
+    gap: 100px;
+    flex-direction: row;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    margin: 0;
-    background-color: #f5f5f5;
+    height: calc(100vh - calc(2 * var(--body-padding-y)));
 }
 
 .controls {
-    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    height: 1000px;
+    gap: 30px;
+}
+
+.players {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.5rem;
+}
+.players select, option {
+    font-size: 1.5rem
+}
+
+.buttons {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+}
+.buttons button {
+    font-size: 1.3rem;
+}
+
+.console {
+    flex: 1;
+
+}
+.console textarea {
+    height: 100%;
+    font-size: 18px;
 }
 
 .board-container {
+
+    --cell-size: 65px;
+    --stone-size: 45px;
+
     display: grid;
-    grid-template-columns: 20px repeat(15, 30px);
-    grid-template-rows: 20px repeat(15, 30px);
-    margin-bottom: 20px;
+    grid-template-columns: 30px repeat(15, var(--cell-size));
+    grid-template-rows: 30px repeat(15, var(--cell-size));
+
     background-color: #DEB887; /* 나무색 배경 */
     border: 2px solid #8B4513; /* 짙은 나무색 테두리 */
 }
 
 .cell {
-    width: 30px;
-    height: 30px;
+    width: var(--cell-size);
+    height: var(--cell-size);
     background-color: transparent; /* 투명 배경 */
     border: 1px solid #8B4513; /* 짙은 나무색 선 */
     box-sizing: border-box;
@@ -38,8 +79,8 @@ body {
 }
 
 .stone {
-    width: 20px;
-    height: 20px;
+    width: var(--stone-size);
+    height: var(--stone-size);
     border-radius: 50%;
     position: absolute;
     top: 50%;
