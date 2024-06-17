@@ -33,6 +33,7 @@ for (let x = 0; x < size; x++) {
 
 const appendLog = (log) => {
     consoleOutput.value += `${log}\n`
+    consoleOutput.scroll(0, Number.MAX_SAFE_INTEGER)
 }
 const clearLog = () => {
     consoleOutput.value = ''
@@ -72,7 +73,7 @@ function initWebSocket() {
         if (action === 'move_success') {
             // 돌 놓고 로그
             addStone(x, y, color)
-            appendLog(`${playerText} 돌을 놓았습니다 (x=${x}, y=${y})\n`)
+            appendLog(`${playerText} 돌을 놓았습니다 (${position})\n`)
         } else if (action === 'move_invalid') {
             // 로그만
             appendLog(`${playerText} 의 ${retry_count}번째 실수.`)
@@ -81,6 +82,8 @@ function initWebSocket() {
             appendLog(`${playerText}의 반복된 실수로 차례가 넘어갑니다!`)
         } else if (action === 'end') {
             appendLog(`${playerText}의 승리!`)
+            toggleConfetti()
+            setTimeout(toggleConfetti, 1000)
         }
 
     }
