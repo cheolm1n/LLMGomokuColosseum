@@ -98,12 +98,14 @@ document.getElementById("playButton").onclick = () => {
     clearBoard()
     const player1 = document.getElementById('selectPlayer1').value;
     const player2 = document.getElementById('selectPlayer2').value;
+    const delay = Number(document.getElementById('delay').value);
 
     const data = {
         action: 'play',
         payload: {
             player1,
-            player2
+            player2,
+            delay
         }
     }
     appendLog("\n게임 시작!\n")

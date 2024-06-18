@@ -14,6 +14,7 @@
     <div class="controls">
         <div class="players">
             <label>
+                <div style="width: 25px; height: 25px; background-color: black; display: inline-block; border-radius: 50%;"></div>
                 Player1
                 <select id="selectPlayer1">
                     <option value="GPT3.5">GPT3.5</option>
@@ -24,6 +25,7 @@
                 </select>
             </label>
             <label>
+                <div style="width: 25px; height: 25px; background-color: white; border: 1px solid black; display: inline-block; border-radius: 50%;"></div>
                 Player2
                 <select id="selectPlayer2">
                     <option value="GPT3.5">GPT3.5</option>
@@ -38,6 +40,10 @@
             <button id="playButton">Play</button>
             <button id="stop">Stop</button>
             <button id="reconnect">Reconnect</button>
+            <div>
+                <label for="delay">간격</label>
+                <input type="number" name="delay" id="delay" value="2">
+            </div>
         </div>
         <div class="console">
             <textarea id="console" rows="20" cols="50"></textarea>

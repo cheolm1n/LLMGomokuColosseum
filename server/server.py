@@ -31,6 +31,7 @@ async def websocket_endpoint(websocket: WebSocket):
             if data.get('action') == 'play':
                 player1 = data.get('payload').get('player1')
                 player2 = data.get('payload').get('player2')
+                delay = data.get('payload').get('delay')
 
                 async def callback(action: str, x: int, y: int, position: str, valid: bool, player_number: int, retry_count: int = 0, winner: int = None):
                     data = {
@@ -49,7 +50,7 @@ async def websocket_endpoint(websocket: WebSocket):
                     get_player(player1, 1),
                     get_player(player2, 2),
                 )
-                await game.play(move_callback=callback)
+                await game.play(move_callback=callback, delay=delay)
         except WebSocketDisconnect as e:
             print("WebSocket disconnect")
             return

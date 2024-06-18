@@ -2,6 +2,7 @@ import json
 from typing import Optional
 
 import numpy as np
+import asyncio
 
 from uuid import uuid4
 from datetime import datetime
@@ -37,16 +38,16 @@ class Game:
         self.player2 = player2
         self.record = Record()
 
-    async def play(self, name: Optional[str] = None, move_callback = None) -> LLMPlayer:
+    async def play(self, name: Optional[str] = None, move_callback = None, delay: Optional[int] = None) -> LLMPlayer:
         if name:
             filename = name
         else:
             filename = datetime.now().strftime('%Y%m%d%H%M%S')
 
         with MoveLogger(filename) as move_logger, MatchLogger(filename) as match_logger:
-            return await self.__play_game(move_logger=move_logger, match_logger=match_logger, move_callback=move_callback)
+            return await self.__play_game(move_logger=move_logger, match_logger=match_logger, move_callback=move_callback, delay=delay)
 
-    async def __play_game(self, move_logger: MoveLogger, match_logger: MatchLogger, move_callback) -> LLMPlayer:
+    async def __play_game(self, move_logger: MoveLogger, match_logger: MatchLogger, move_callback, delay=None) -> LLMPlayer:
         # initialize game
         board = np.zeros((15, 15), dtype=int)
         current_player = self.player1
@@ -147,6 +148,10 @@ class Game:
                                                        "Alphabet(as columns) is in between A from O. and number(as rows) is in between 1 from 15."
                                                        "Please move to another location. "
                                             })
+
+            if delay is not None:
+                print(f"delay {delay} sec...")
+                await asyncio.sleep(delay)
 
         ended = get_now_unix_ms()
         winner = black if current_player.player_number == self.player1.player_number else white
