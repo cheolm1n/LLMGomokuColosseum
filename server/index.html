@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <title>Go Board</title>
+    <link rel="stylesheet" href="static/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/confettis@0.3.0/lib/confettis.min.js"></script>
+
+</head>
+<body>
+<div class="wrap">
+    <div class="board-container" id="board-container"></div>
+    <div class="controls">
+        <div class="players">
+            <label>
+                <div style="width: 25px; height: 25px; background-color: black; display: inline-block; border-radius: 50%;"></div>
+                Player1
+                <select id="selectPlayer1">
+                    <option value="GPT3.5">GPT3.5</option>
+                    <option value="GPT4o">GPT4o</option>
+                    <option value="Llama3">Llama3</option>
+                    <option value="Gemini">Gemini</option>
+                    <option value="Claude">Claude</option>
+                </select>
+            </label>
+            <label>
+                <div style="width: 25px; height: 25px; background-color: white; border: 1px solid black; display: inline-block; border-radius: 50%;"></div>
+                Player2
+                <select id="selectPlayer2">
+                    <option value="GPT3.5">GPT3.5</option>
+                    <option value="GPT4o">GPT4o</option>
+                    <option value="Llama3">Llama3</option>
+                    <option value="Gemini">Gemini</option>
+                    <option value="Claude">Claude</option>
+                </select>
+            </label>
+        </div>
+        <div class="buttons">
+            <button id="playButton">Play</button>
+            <button id="stop">Stop</button>
+            <button id="reconnect">Reconnect</button>
+            <div>
+                <label for="delay">간격</label>
+                <input type="number" name="delay" id="delay" value="2">
+            </div>
+        </div>
+        <div class="console">
+            <textarea id="console" rows="20" cols="50"></textarea>
+        </div>
+    </div>
+    <audio id="winSound" src="static/win_sound.mp3"></audio>
+    <audio id="goSound1" src="static/go_sound1.mp3"></audio>
+    <audio id="goSound2" src="static/go_sound2.mp3"></audio>
+</div>
+<script src="static/script.js"></script>
+<script src="static/confetti.js"></script>
+</body>
+</html>

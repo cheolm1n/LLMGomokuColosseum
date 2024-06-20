@@ -2,6 +2,7 @@ import json
 from typing import Optional
 
 import numpy as np
+import asyncio
 
 from uuid import uuid4
 from datetime import datetime
@@ -37,16 +38,16 @@ class Game:
         self.player2 = player2
         self.record = Record()
 
-    async def play(self, name: Optional[str] = None) -> LLMPlayer:
+    async def play(self, name: Optional[str] = None, move_callback = None, delay: Optional[int] = None) -> LLMPlayer:
         if name:
             filename = name
         else:
             filename = datetime.now().strftime('%Y%m%d%H%M%S')
 
         with MoveLogger(filename) as move_logger, MatchLogger(filename) as match_logger:
-            return await self.__play_game(move_logger=move_logger, match_logger=match_logger)
+            return await self.__play_game(move_logger=move_logger, match_logger=match_logger, move_callback=move_callback, delay=delay)
 
-    async def __play_game(self, move_logger: MoveLogger, match_logger: MatchLogger) -> LLMPlayer:
+    async def __play_game(self, move_logger: MoveLogger, match_logger: MatchLogger, move_callback, delay=None) -> LLMPlayer:
         # initialize game
         board = np.zeros((15, 15), dtype=int)
         current_player = self.player1
@@ -78,6 +79,8 @@ class Game:
                 stone = get_stone(current_player)
                 print(f"\nPlayer {current_player.player_number}({stone}) move : {convert_coord_to_kifu(x=x, y=y)}, reason : {reason}")
                 print_board(board, (x, y), current_player.player_number)
+                if move_callback is not None:
+                    await move_callback('move_success', x, y, position, True, current_player.player_number, 0, None)
 
                 move_logger.append_log(
                     MoveLog(
@@ -99,6 +102,7 @@ class Game:
                 game_record.add(player=current_player, x=x, y=y, valid=True, reason=reason)
                 if check_winner(board, current_player.player_number):
                     print(f"Player {current_player.player_number}({stone}) wins!")
+                    await move_callback('end', x, y, position, True, current_player.player_number, None, current_player.player_number)
                     break
 
                 current_player = self.player2 if current_player == self.player1 else self.player1
@@ -124,8 +128,10 @@ class Game:
                 )
                 retry_count += 1
                 print(f"Invalid move, {retry_count} try again.")
+                await move_callback('move_invalid', x, y, position, False, current_player.player_number, retry_count, None)
                 if retry_count >= 3:
                     print("3번 착수에 실패하여 다른 플레이어턴으로 넘어갑니다.")
+                    await move_callback('switch_turn', x, y, position, False, current_player.player_number, retry_count, None)
                     current_player = self.player2 if current_player == self.player1 else self.player1
                     retry_count = 0
                     current_player.history.clear()
@@ -142,6 +148,10 @@ class Game:
                                                        "Alphabet(as columns) is in between A from O. and number(as rows) is in between 1 from 15."
                                                        "Please move to another location. "
                                             })
+
+            if delay is not None:
+                print(f"delay {delay} sec...")
+                await asyncio.sleep(delay)
 
         ended = get_now_unix_ms()
         winner = black if current_player.player_number == self.player1.player_number else white
